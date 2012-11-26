@@ -8,7 +8,13 @@ categories: [JavaScript, DOM, HTML5]
 
 jQuery is so easy to use that sometimes we end up relying on it even for tasks that could be easily achieved using the native browser APIs. While there is nothing wrong with using jQuery, going native makes our code more portable, future proof and often more performant.
 
-DOM selection is an example of something straightforward to achieve without jQuery: the **HTML5 Selectors API** has been around for quite some time now, and it's supported in all modern browsers and in IE down to version 8. Its implementation is based on the `querySelector` family of methods, that includes four members:
+DOM selection is an example of something often performed with jQuery, but straightforward enough to achieve without any external library.
+
+
+The Selectors API
+-----------------
+
+The **HTML5 Selectors API** has been around for quite some time now, and it is supported in all modern browsers and in IE down to version 8. Its implementation is based on the `querySelector` family of methods, that includes four members:
 
 - `document.querySelector( selector )` takes a CSS selector string and returns the first DOM element that matches the selector, or `null` if no match is found.
 
@@ -22,7 +28,7 @@ DOM selection is an example of something straightforward to achieve without jQue
 NodeList vs. Array gotcha
 -------------------------
 
-It's important to know that `querySelectorAll` methods return a `NodeList`, which looks like an array but, a part from the fact that its elements can be accessed by index, and that it has a `length` property, it does not support any of the usual array methods.
+It's important to know that `querySelectorAll` methods return a `NodeList`, which looks similar to an array, as its elements can be accessed via their index, and it has a `length` property. Unfortunately, the similarity ends there, as `NodeList` does not support any of the usual array methods.
 
 Do _not_ try to turn a `NodeList` into an array with something like `Array.prototype.slice.apply( nodeList )`: although it does work in some browsers, it fails in others, as `NodeList` is a _host object_ and, as such, there is no guarantee that Array methods like `slice` can be applied on it. Instead, the only reliable way to turn it into an array is to loop through all its items and populate an array:
 
@@ -102,4 +108,5 @@ Read more on this topic
 -----------------------
 
 - [Selectors API on MDN](https://developer.mozilla.org/en-US/docs/DOM/Locating_DOM_elements_using_selectors)
+- [Selectors API Level 1 working draft](http://www.w3.org/TR/selectors-api/)
 - [Selectors API Level 2 working draft](http://www.w3.org/TR/selectors-api2/)
