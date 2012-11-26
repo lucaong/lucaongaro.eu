@@ -102,7 +102,7 @@ query2.all()   // => all descendants of elem matching the selector
 The next level
 --------------
 
-A useful addition for this nano library would be a `matches` method, that returns true if a selector matches an element, and false otherwise. A trivial but rather inefficient way to do this is running a query using the selector, and then searching if the element is present among the results.
+A useful addition for this nano library would be a `matches` method, that returns true if a selector matches an element, and false otherwise. A trivial but rather inefficient way to do this would be running a query using the selector, and then searching if the element is included in the results.
 
 A simpler approach will soon be available with the **Selectors API Level 2**, using the `element.matchesSelector( selector )` method. Firefox and Chrome already provide a prefixed version of this method in their latest versions (`element.mozMatchesSelector` and `element.webkitMatchesSelector`), and hopefully a standard implementation will come soon on all browsers.
 
