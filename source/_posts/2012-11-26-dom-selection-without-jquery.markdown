@@ -92,17 +92,21 @@ query.first() // => first element matching the selector, or null
 query.all()   // => all elements matching the selector
 
 // Or restrict the query to the descendant of an element:
-var query2 = $q(".foo", elem); // elem is a DOM element and we restrict the query to its descendant
+var query2 = $q(".foo", elem); // elem is a DOM element
 
 query2.first() // => first descendant of elem matching the selector
 query2.all()   // => all descendants of elem matching the selector
 ```
 
 
-Matches? Here comes element.matchesSelector
--------------------------------------------
+The next level
+--------------
 
-A useful addition for this nano library would be a `matches` method, that returns true if a selector matches an element, and false otherwise. A trivial but rather inefficient way to do this is running a query using the selector, and then searching if the element is present among the results. A simpler approach will soon be available with the **Selectors API Level 2**, using the `element.matchesSelector( selector )` method. Firefox and Chrome already provide a prefixed version of this method in their latest versions (`element.mozMatchesSelector` and `element.webkitMatchesSelector`), and hopefully a standard implementation will come soon on all browsers.
+A useful addition for this nano library would be a `matches` method, that returns true if a selector matches an element, and false otherwise. A trivial but rather inefficient way to do this is running a query using the selector, and then searching if the element is present among the results.
+
+A simpler approach will soon be available with the **Selectors API Level 2**, using the `element.matchesSelector( selector )` method. Firefox and Chrome already provide a prefixed version of this method in their latest versions (`element.mozMatchesSelector` and `element.webkitMatchesSelector`), and hopefully a standard implementation will come soon on all browsers.
+
+The **Selectors API Level 2** will also introduce the two methods `find` and `findAll` that will be similar to `querySelector` and `querySelectorAll`, but providing also support for specifying one or more context nodes to restrict the search. With the addition of these new methods, native DOM selection will be as powerful and easy as jQuery, leaving no excuse for developers to depend on a particular framework for these kind of tasks.
 
 Read more on this topic
 -----------------------
