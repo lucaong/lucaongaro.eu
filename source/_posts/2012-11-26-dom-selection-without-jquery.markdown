@@ -46,14 +46,14 @@ With these things in mind, it is trivial to build a microscopic but very efficie
 ```javascript
 // Build the DOM selection query
 function $q( selector, ctx ) {
+	ctx = ctx || document;
 
   // Return methods for lazy evaluation of the query
   return {
 
-    // Return array of all matching
+    // Return array of all matches
     all: function() {
       var list, ary = [];
-      ctx = ctx || document;
       list = ctx.querySelectorAll( selector );
       for ( var i = 0; i < list.length; i++ ) {
         ary[ i ] = list[ i ];
@@ -63,13 +63,11 @@ function $q( selector, ctx ) {
 
     // Return first match
     first: function() {
-      ctx = ctx || document;
       return ctx.querySelector( selector );
     },
 
     // Return last match
     last: function() {
-      ctx = ctx || document;
       var list = ctx.querySelectorAll( selector );
       return list.length > 0 ? list[ list.length - 1 ] : null;
     }
