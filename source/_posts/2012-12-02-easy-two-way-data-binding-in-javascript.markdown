@@ -22,14 +22,14 @@ A simple implementation using jQuery
 It is quite straightforward to implement what discussed using **jQuery**, as the popular library lets us easily subscribe and publish DOM events, as well as custom ones:
 
 ```javascript
-function DataBinder( key ) {
+function DataBinder( object_id ) {
   // Use a jQuery object as simple PubSub
   var pubSub = jQuery({});
   
   // We expect a `data` element specifying the binding
   // in the form: data-bind-<object_id>="<property_name>"
-  var data_attr = "bind-" + key,
-      message = key + ":change";
+  var data_attr = "bind-" + object_id,
+      message = object_id + ":change";
 
   // Listen to change events on elements with the data-binding attribute and proxy
   // them to the PubSub, so that the change is "broadcasted" to all connected objects
@@ -41,8 +41,8 @@ function DataBinder( key ) {
 
   // PubSub propagates changes to all bound elements, setting value of
   // input tags or HTML content of other tags
-  pubSub.on( message, function( evt, binding, new_val ) {
-    jQuery( "[data-" + data_attr + "=" + binding + "]" ).each( function() {
+  pubSub.on( message, function( evt, prop_name, new_val ) {
+    jQuery( "[data-" + data_attr + "=" + prop_name + "]" ).each( function() {
       var $bound = jQuery( this );
 
       if ( $bound.is("input, textarea, select") ) {
@@ -110,7 +110,7 @@ Doing without jQuery
 In most projects these days, chances are that jQuery is already in use, so the above example would be perfectly acceptable. But what if we want to take the exercise to the extreme and remove also the dependency on jQuery? Well, it turns out that it is not that much harder (especially if we limit IE support only to version 8 and above). In the end, we just have to implement a custom _PubSub_ and observe DOM events with vanilla JavaScript:
 
 ```javascript
-function DataBinder( key ) {
+function DataBinder( object_id ) {
   // Create a simple PubSub object
   var pubSub = {
         callbacks: {},
@@ -128,8 +128,8 @@ function DataBinder( key ) {
         }
       },
 
-      data_attr = "data-bind-" + key,
-      message = key + ":change",
+      data_attr = "data-bind-" + object_id,
+      message = object_id + ":change",
       // IE8 uses attachEvent instead of addEventListener
       addEventListener = document.addEventListener || document.attachEvent;
 
@@ -144,8 +144,8 @@ function DataBinder( key ) {
   }, false );
 
   // PubSub propagates changes to all bound elements
-  pubSub.on( message, function( evt, binding, new_val ) {
-    var elements = document.querySelectorAll("[" + data_attr + "=" + binding + "]"),
+  pubSub.on( message, function( evt, prop_name, new_val ) {
+    var elements = document.querySelectorAll("[" + data_attr + "=" + prop_name + "]"),
         tag_name;
 
     for ( var i = 0, len = elements.length; i < len; i++ ) {
