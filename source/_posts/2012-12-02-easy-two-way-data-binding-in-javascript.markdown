@@ -35,6 +35,7 @@ function DataBinder( key ) {
   // them to the PubSub, so that the change is "broadcasted" to all connected objects
   jQuery( document ).on( "change", "[data-" + data_attr + "]", function( evt ) {
     var $input = jQuery( this );
+
     pubSub.trigger( message, [ $input.data( data_attr ), $input.val() ] );
   });
 
@@ -43,6 +44,7 @@ function DataBinder( key ) {
   pubSub.on( message, function( evt, binding, new_val ) {
     jQuery( "[data-" + data_attr + "=" + binding + "]" ).each( function() {
       var $bound = jQuery( this );
+
       if ( $bound.is("input, textarea, select") ) {
         $bound.val( new_val );
       } else {
@@ -135,6 +137,7 @@ function DataBinder( key ) {
   addEventListener.call( document, "change", function( evt ) {
     var target = evt.target || evt.srcElement,
         data_value = target.getAttribute( data_attr );
+
     if ( data_value && data_value !== "" ) {
       pubSub.publish( message, data_value, target.value );
     }
@@ -144,8 +147,10 @@ function DataBinder( key ) {
   pubSub.on( message, function( evt, binding, new_val ) {
     var elements = document.querySelectorAll("[" + data_attr + "=" + binding + "]"),
         tag_name;
+
     for ( var i = 0, len = elements.length; i < len; i++ ) {
       tag_name = elements[ i ].tagName.toLowerCase();
+
       if ( tag_name === "input" || tag_name === "textarea" || tag_name === "select" ) {
         elements[ i ].value = new_val;
       } else {
