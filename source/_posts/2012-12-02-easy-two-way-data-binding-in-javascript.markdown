@@ -126,9 +126,9 @@ function DataBinder( key ) {
             this.callbacks[ msg ][ i ].apply( this, arguments );
           }
         }
-      };
+      },
 
-  var data_attr = "data-bind-" + key,
+  		data_attr = "data-bind-" + key,
       message = key + ":change",
       // IE8 uses attachEvent instead of addEventListener
       addEventListener = document.addEventListener || document.attachEvent;
