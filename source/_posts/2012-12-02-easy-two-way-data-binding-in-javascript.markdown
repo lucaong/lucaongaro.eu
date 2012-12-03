@@ -23,7 +23,7 @@ It is quite straightforward to implement what discussed using **jQuery**, as the
 
 ```javascript
 function DataBinder( key ) {
-	// Use a jQuery object as simple PubSub
+  // Use a jQuery object as simple PubSub
   var pubSub = jQuery({});
   
   // We expect a `data` element specifying the binding
@@ -121,14 +121,14 @@ function DataBinder( key ) {
         },
 
         publish: function( msg ) {
-        	this.callbacks[ msg ] = this.callbacks[ msg ] || []
+          this.callbacks[ msg ] = this.callbacks[ msg ] || []
           for ( var i = 0, len = this.callbacks[ msg ].length; i < len; i++ ) {
             this.callbacks[ msg ][ i ].apply( this, arguments );
           }
         }
       },
 
-  		data_attr = "data-bind-" + key,
+      data_attr = "data-bind-" + key,
       message = key + ":change",
       // IE8 uses attachEvent instead of addEventListener
       addEventListener = document.addEventListener || document.attachEvent;
@@ -168,18 +168,18 @@ The model can stay the same, apart from the call to the `trigger` jQuery method 
 ```javascript
 // In the model's setter:
 function User( uid ) {
-	// ...
+  // ...
 
-	user = {
-		// ...
-		set: function( attr_name, val ) {
-		  this.attributes[ attr_name ] = val;
-		  // Use the `publish` method
-		  binder.publish( uid + ":change", attr_name, val, this );
-		}
-	}
+  user = {
+    // ...
+    set: function( attr_name, val ) {
+      this.attributes[ attr_name ] = val;
+      // Use the `publish` method
+      binder.publish( uid + ":change", attr_name, val, this );
+    }
+  }
 
-	// ...
+  // ...
 }
 ```
 
