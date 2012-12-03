@@ -136,10 +136,10 @@ function DataBinder( object_id ) {
   // Listen to change events and proxy to PubSub
   addEventListener.call( document, "change", function( evt ) {
     var target = evt.target || evt.srcElement,
-        data_value = target.getAttribute( data_attr );
+        prop_name = target.getAttribute( data_attr );
 
-    if ( data_value && data_value !== "" ) {
-      pubSub.publish( message, data_value, target.value );
+    if ( prop_name && prop_name !== "" ) {
+      pubSub.publish( message, prop_name, target.value );
     }
   }, false );
 
