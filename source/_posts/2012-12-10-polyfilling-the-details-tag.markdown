@@ -81,9 +81,9 @@ If support for IE8 or earlier is not a concern (in a fictional ideal world :P ),
 })();
 ```
 
-For what regards CSS, we basically need to hide everything in the `details` tag apart from `summary` when `open` is not set, and display everything when `open` is set. There are only two minor difficulties here:
+For what concerns CSS, we basically need to hide everything in the `details` tag apart from `summary` when `open` is not set, and display everything when `open` is set. There are only two minor difficulties here:
 
-First, we cannot set `display: none` on `details`, because otherwise we would have no way to show the nested `summary` element. Furthermore, we want to hide the **content** of the `details` tag, not the element itself. This can be solved by hiding the _text content_ of `deatils` by setting `font-size` and `line-height` to 0 and `color` to trasparent (with the short-hand `font: 0/0 a; color: transparent;` used by the excellent [Bourbon](http://bourbon.io/)), and then setting `display: none` to all children but `summary`.
+First, we cannot set `display: none` on `details`, because otherwise we would have no way to show the nested `summary` element. Furthermore, we want to hide the **content** of the `details` tag, not the element itself with its borders, background, etc. This can be solved by hiding only the _text content_ of `deatils` setting `font-size` and `line-height` to 0 and `color` to trasparent (with the short-hand `font: 0/0 a; color: transparent;` used by the excellent [Bourbon](http://bourbon.io/)), and then setting `display: none` to all children but `summary`.
 
 Second, if we hid the inner elements by default, when `open` is set we would need to restore the original `display` value of inner elements, which in theory could be anything like `block`, `inline`, `inline-block`, etc. Instead, the solution is to do the opposite and use the `:not` pseudo-class to hide all children of `details` when `open` is not present or, in CSS jargon, `:not([open])`.
 
@@ -120,7 +120,9 @@ details summary, details:not([open]) summary {
 IE8 and earlier, where things starts to suck
 --------------------------------------------
 
-So far so good, but many times, even if reluctant, we have to support the infamous legacy IE versions. The main problem is that IE8 and earlier do not support the `:not` CSS pseudo-class, which is vital for our polyfill. Also, the JavaScript event-handling logic is non-standard. One possible solution is to use JavaScript to set a `not-open` class whenever we remove the `open` attribute, so that we can select for it. Unfortunately old IE version discard the entire rule when they encounter a selector that they do not support, so we have either to duplicate CSS or to make use of this `not-open` class only, also in browsers that would support the `:not` pseudo-class.
+So far so good, but many times, even if reluctant, we have to support the infamous legacy IE versions. The main problem is that IE8 and earlier do not support the `:not` CSS pseudo-class, which is vital for our polyfill.
+
+One possible solution is to use JavaScript to set a `not-open` class whenever we remove the `open` attribute, so that we can select for it. Unfortunately old IE version discard the entire rule when they encounter a selector that they do not support, so we have either to duplicate CSS or to make use of this `not-open` class only, also in browsers that would support the `:not` pseudo-class.
 
 Also, we have to set this class on every non-open `details` tag upon page load and whenever new `details` elements are added to the DOM. This deviates from the standard behavior, and needs additional effort whenever we make use of lazy client-side rendering.
 
@@ -160,12 +162,13 @@ if ( !detailsSupported ) {
         if ( document.addEventListener ) {
           document.addEventListener( "click", clickHandler, false );
         } else {
+          // IE <= 8 use attachEvent
           document.attachEvent( "onclick", clickHandler );
         }
     })();
 }​
 
-// At the end of the body, we can set the `not-open` class
+// At the end of the <body>, we can set the `not-open` class
 // where needed. This should be done also whenever new `details`
 // tags are added to the DOM...
 (function() {
@@ -177,7 +180,7 @@ if ( !detailsSupported ) {
 })();
 ```
 
-And the resulting CSS is the same as before, but using the `not-open` class instead of `:not([open])`:
+The CSS for legacy IE versions is the same as the one before, but using the `not-open` class instead of `:not([open])`:
 
 ```css
 \* Hide the marker in Chrome *\
@@ -211,4 +214,6 @@ details summary, details.not-open summary {
 Conclusion
 ----------
 
-The HTML5 `details` and `summary` tags are a very useful addition to the DOM, as they cover a very common use case in UI design. The real problem is not really the lack of support, but more the difficulty of implementing a proper cross-browser polyfill that respects the HTML5 spec, without being too overkill. While on modern browsers we can start using this feature now, on old IE versions polyfilling has drawbacks and is arguably less nice than a full JavaScript solution that does not try to patch support for `summary`.
+The HTML5 `details` and `summary` tags are a very useful addition to the DOM, as they cover a very common use case in UI design.
+
+The real problem is not really the lack of support, but more the difficulty of implementing a proper cross-browser polyfill that respects the HTML5 spec, without being too overkill. While on modern browsers we can start using this feature now, on old IE versions polyfilling has drawbacks and is arguably less nice than a full JavaScript solution that does not try to patch support for `summary`.
