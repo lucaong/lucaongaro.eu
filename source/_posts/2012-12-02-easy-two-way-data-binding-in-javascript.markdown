@@ -132,18 +132,23 @@ function DataBinder( object_id ) {
 
       data_attr = "data-bind-" + object_id,
       message = object_id + ":change",
-      // IE8 uses attachEvent instead of addEventListener
-      addEventListener = document.addEventListener || document.attachEvent;
+
+      changeHandler = function( evt ) {
+        var target = evt.target || evt.srcElement, // IE8 compatibility
+            prop_name = target.getAttribute( data_attr );
+
+        if ( prop_name && prop_name !== "" ) {
+          pubSub.publish( message, prop_name, target.value );
+        }
+      };
 
   // Listen to change events and proxy to PubSub
-  addEventListener.call( document, "change", function( evt ) {
-    var target = evt.target || evt.srcElement,
-        prop_name = target.getAttribute( data_attr );
-
-    if ( prop_name && prop_name !== "" ) {
-      pubSub.publish( message, prop_name, target.value );
-    }
-  }, false );
+  if ( document.addEventListener ) {
+    document.addEventListener( "change", changeHandler, false );
+  } else {
+    // IE8 uses attachEvent instead of addEventListener
+    document.attachEvent( "onchange", changeHandler );
+  }
 
   // PubSub propagates changes to all bound elements
   pubSub.on( message, function( evt, prop_name, new_val ) {
