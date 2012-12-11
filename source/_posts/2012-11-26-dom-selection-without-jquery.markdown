@@ -24,6 +24,7 @@ The **HTML5 Selectors API** has been around for quite some time now, and it is s
 
 - `element.querySelectorAll( selector )` does the same as its counterpart defined on `document`, but again searching only among the descendants of `element`.
 
+<!-- more -->
 
 NodeList vs. Array gotcha
 -------------------------

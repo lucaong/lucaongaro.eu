@@ -14,6 +14,8 @@ Many popular client-side JavaScript frameworks like **Ember.js**, **Angular.js**
 2. We need to monitor changes on the properties and on the UI elements
 3. We need to propagate any change to all bound objects and elements
 
+<!-- more -->
+
 While there are multiple ways to achieve this, a simple and efficient approach makes use of the _PubSub_ pattern. The idea is simple: we can use custom `data` attributes to specify bindings in the HTML code. All JavaScript objects and DOM elements that are bound together will "subscribe" to a _PubSub_ object. Anytime a change is detected on either the JavaScript object or on an HTML input element, we proxy the event to the _PubSub_, which in turn broadcasts and propagates the change on all the other bound objects and elements.
 
 A simple implementation using jQuery
