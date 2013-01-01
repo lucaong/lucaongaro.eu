@@ -2,26 +2,37 @@
 // To give it a try, uncomment some of the lines below rebuild your blog, and see how it works.
 // If you need a handy color picker try http://hslpicker.com
 
-$text-color: #222 !default;
-$text-color-light: #555 !default;
+$primary-theme-color: #8f351d;
+$secondary-theme-color: #efd7af;
 
-$header-bg: #004444;
-$subtitle-color: desaturate(lighten($header-bg, 70), 70);
-$nav-bg: desaturate(lighten(#ff7300, 18), 5);
-//$nav-bg-front: image-url('noise.png');
-$nav-bg-back: linear-gradient(lighten($nav-bg, 8), $nav-bg 5%, darken($nav-bg, 11));
-$sidebar-bg: desaturate(#e0eeee, 8);
-//$sidebar-link-color: saturate(#526f9a, 10);
+$text-color: desaturate(darken($primary-theme-color, 20), 20) !default;
+$text-color-light: lighten($text-color, 5) !default;
+
+$header-bg: $primary-theme-color;
+$subtitle-color: $primary-theme-color;
+
+$nav-bg: $secondary-theme-color;
+$nav-bg-front: transparent;
+$nav-bg-back: $nav-bg;
+$nav-border-top: $nav-bg;
+$nav-border-bottom: darken($nav-bg, 10);
+
+$sidebar-color: desaturate($primary-theme-color, 20);
+$sidebar-bg: desaturate(lighten($secondary-theme-color, 10), 10);
+$sidebar-link-color: $primary-theme-color;
 //$sidebar-link-color-hover: darken(#7ab662, 9);
-$footer-bg: #abb !default;
-//$footer-bg-front: image-url('noise.png');
-//$footer-bg-back: linear-gradient(lighten($footer-bg, 8), $footer-bg, darken($footer-bg, 11));
+
+$footer-bg: $primary-theme-color !default;
+$footer-bg-front: image-url('noise.png');
+$footer-bg-back: $primary-theme-color;
+$footer-color: $secondary-theme-color;
+$footer-link-color: $footer-color;
 
 // Main Link Colors
-$link-color: lighten(#004444, 3) !default;
-$link-color-hover: adjust-color($link-color, $lightness: 10, $saturation: 25) !default;
-$link-color-visited: adjust-color($link-color, $hue: 30, $lightness: 5) !default;
-$link-color-active: adjust-color($link-color-hover, $lightness: -15) !default;
+$link-color: lighten($primary-theme-color, 10) !default;
+$link-color-hover: lighten($link-color, 10) !default;
+$link-color-visited: darken($link-color, 10) !default;
+$link-color-active: lighten($link-color-hover, 5) !default;
 
 
 /* To use the light Solarized highlighting theme uncomment the following line */

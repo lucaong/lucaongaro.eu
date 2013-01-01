@@ -1,18 +1,179 @@
-body > header {
-  background: $header-bg;
+body > header[role=banner] {
+  background-color: #8f351d;
+  border: 5px solid #efd7af;
+  max-width: 840px;
+  height: 304px;
+  text-align: center;
+  position: relative;
+  background: -webkit-linear-gradient(left, rgba(239, 215, 175, 0.25) 50%, transparent 50%), #8f351d;
+  background-size: 2px 2px;
+  margin: 0;
+  padding: 0;
   h1 {
-    display: inline-block;
-    margin: 0;
-    a, a:visited, a:hover {
-      color: $title_color;
+    width: auto;
+    height: 298px;
+    margin: 2px;
+    top: 2px;
+    left: 2px;
+    border: 1px solid #efd7af;
+    color: #efd7af;
+    text-transform: uppercase;
+    font-size: 120px;
+    font-family: 'Fjalla One', Helvetica, sans-serif;
+    text-shadow: 0 2px 0 #8f351d, 2px 0px 0 #8f351d, 0 -2px 0 #8f351d, -2px 0 0 #8f351d, 0 0 4px #8f351d;
+    a {
+      display: block;
+      color: inherit;
+      margin: 30px auto 10px auto;
+      padding: 0;
       text-decoration: none;
     }
   }
   h2 {
-    margin: .2em 0 0;
-    @extend .sans;
-    font-size: 1em;
-    color: $subtitle-color;
-    font-weight: normal;
+    color: #8f351d;
+    display: block;
+    margin: -111px auto 0 auto;
+    font-family: 'Fjalla One', Helvetica, sans-serif;
+    padding: 0;
+    font-size: 38px;
+    position: relative;
+    width: 350px;
+    height: 70px;
+    line-height: 70px;
+    background: #efd7af;
+    border: 2px solid #8f351d;
+    text-transform: uppercase;
+    strong {
+      display: inline-block;
+      &:before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background: -webkit-linear-gradient(left, rgba(239, 215, 175, 0.25) 50%, transparent 50%);
+        background-size: 2px 2px;
+      }
+    }
+    &:before {
+      content: "{ ";
+      font-weight: bold;
+    }
+    &:after {
+      content: " }";
+      font-weight: bold;
+    }
+    .ribbon {
+      &:before, &:after {
+        display: block;
+        position: absolute;
+        height: 35px;
+        width: 35px;
+        content: "";
+        background: #efd7af;
+        border: 2px solid #8f351d;
+      }
+      &.left {
+        &:before {
+          border-bottom: none;
+          border-right: none;
+          top: -2px;
+          left: -20px;
+          -webkit-transform: skewX(30deg);
+        }
+        &:after {
+          border-top: none;
+          border-right: none;
+          bottom: -2px;
+          left: -20px;
+          -webkit-transform: skewX(-30deg);
+        }
+      }
+      &.right {
+        &:before {
+          border-bottom: none;
+          border-left: none;
+          top: -2px;
+          right: -20px;
+          -webkit-transform: skewX(-30deg);
+        }
+        &:after {
+          border-top: none;
+          border-left: none;
+          bottom: -2px;
+          right: -20px;
+          -webkit-transform: skewX(30deg);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 675px) {
+  body > header[role=banner] {
+    height: 250px;
+    h1 {
+      font-size: 90px;
+      height: 244px;
+    }
+    h2 {
+      font-size: 30px;
+      height: 54px;
+      line-height: 54px;
+      margin: -88px auto 0 auto;
+      .ribbon {
+        &:before, &:after {
+          height: 27px;
+          width: 27px;
+        }
+        &.left {
+          &:before, &:after {
+            left: -10px;
+          }
+        }
+        &.right {
+          &:before, &:after {
+            right: -10px;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 520px) {
+  body > header[role=banner] {
+    height: 150px;
+    h1 {
+      font-size: 50px;
+      height: 144px;
+      a {
+        margin-top: 20px;
+      }
+    }
+    h2 {
+      font-size: 20px;
+      height: 35px;
+      line-height: 35px;
+      margin: -62px auto 0 auto;
+      width: 184px;
+      .ribbon {
+        &:before, &:after {
+          height: 18px;
+          width: 18px;
+        }
+        &.left {
+          &:before, &:after {
+            left: -7px;
+          }
+        }
+        &.right {
+          &:before, &:after {
+            right: -7px;
+          }
+        }
+      }
+    }
   }
 }
