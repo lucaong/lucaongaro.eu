@@ -11,11 +11,17 @@ $text-color-light: lighten($text-color, 5) !default;
 $header-bg: $primary-theme-color;
 $subtitle-color: $primary-theme-color;
 
+$nav-color: $primary-theme-color;
+$nav-color-hover: lighten($nav-color, 10);
 $nav-bg: $secondary-theme-color;
 $nav-bg-front: transparent;
 $nav-bg-back: $nav-bg;
 $nav-border-top: $nav-bg;
 $nav-border-bottom: darken($nav-bg, 10);
+$nav-border-left: darken($nav-bg, 10);
+$nav-border-right: transparent;
+
+$main-bg: #fffff9;
 
 $sidebar-color: desaturate($primary-theme-color, 20);
 $sidebar-bg: desaturate(lighten($secondary-theme-color, 10), 10);
