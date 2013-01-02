@@ -6,7 +6,7 @@ comments: true
 categories: [HTML5, DOM, JavaScript, CSS]
 ---
 
-A common feature in many UIs is a widget that can be hidden or shown by clicking on some handle. Some examples are "accordions" or collapsible/expandable sections and navigation menus. Usually the functionality is quite simply achieved with some JavaScript code that toggles the `display` property of some elements when a handle is clicked.
+A common feature in many UIs is a widget that can be hidden or shown by clicking on some handle. Some examples are "accordions" or collapsible/expandable sections and navigation menus. Usually the interactivity is achieved with some JavaScript code that toggles the `display` property of some elements when a handle is clicked.
 
 HTML5 adds two new tags that can theoretically be used to achieve the same effect without any JavaScript code: the `details` and the `summary` tags. Here is an excerpt from the [HTML5 spec](http://www.whatwg.org/specs/web-apps/current-work/multipage/interactive-elements.html#the-details-element):
 
@@ -31,7 +31,7 @@ Provided that we could write a reasonably good polyfill, we could start using th
 
 1. Detecting support for the interactive behavior of the `details` tag
 2. If not available natively, adding support for setting/unsetting the `open` attribute when clicking on the `summary` element with JavaScript
-3. Styling the open and not open states with CSS, so that the widget looks the same in all browsers
+3. Styling the two states (open and closed) with CSS, so that the widget looks the same in all browsers
 
 Feature detection
 -----------------
@@ -44,7 +44,7 @@ var detailsSupported = (function() {
 })();
 ```
 
-While simple and quick, this feature detection technique unfortunately gives false positives in some old Chrome versions (like version 10), as noted [here](http://mathiasbynens.be/notes/html5-details-jquery#comment-35). I personally think that in most practical applications this is good enough, but `Modernizr` has a feature detection method that, despite being longer and more complicated, it is virtually bulletproof (it basically adds a `details` element to the body, toggles its `open` attribute and check if the `offsetHeight` changes).
+While simple and quick, this feature detection technique unfortunately gives false positives in some old Chrome versions (like version 10), as noted [here](http://mathiasbynens.be/notes/html5-details-jquery#comment-35). I personally think that in most practical applications this is good enough, but [Modernizr](http://modernizr.com/) has a feature detection method that, despite being longer and more complicated, it is virtually bulletproof (it basically adds a `details` element to the body, toggles its `open` attribute and check if the `offsetHeight` changes).
 
 Adding interactivity in modern browsers
 ---------------------------------------
@@ -85,7 +85,7 @@ For what concerns CSS, we basically need to hide everything in the `details` tag
 
 First, we cannot set `display: none` on `details`, because otherwise we would have no way to show the nested `summary` element. Furthermore, we want to hide the **content** of the `details` tag, not the element itself with its borders, background, etc. This can be solved by hiding only the _text content_ of `deatils` setting `font-size` and `line-height` to 0 and `color` to trasparent (with the short-hand `font: 0/0 a; color: transparent;` used by the excellent [Bourbon](http://bourbon.io/)), and then setting `display: none` to all children but `summary`.
 
-Second, if we hid the inner elements by default, when `open` is set we would need to restore the original `display` value of inner elements, which in theory could be anything like `block`, `inline`, `inline-block`, etc. Instead, the solution is to do the opposite and use the `:not` pseudo-class to hide all children of `details` when `open` is not present or, in CSS jargon, `:not([open])`.
+Second, if we hid the inner elements by default, then when the `open` attribute is set we would need to restore the original `display` value of inner elements. The problem is that the original value could be anything like `block`, `inline`, `inline-block`, etc. and we have no way in CSS to say "get back to your previous value". Here the solution is to do the opposite and use the `:not` pseudo-class to hide all children of `details` when the `open` attribute is not present (in CSS jargon `details:not([open])`). As the `:not` rule adds specificity, the display property goes back to the original value as soon as this rule is not met.
 
 The resulting CSS is something like the following:
 
@@ -117,12 +117,12 @@ details summary, details:not([open]) summary {
 }
 ```
 
-IE8 and earlier, where things starts to suck
---------------------------------------------
+IE8 and earlier, where things start to suck
+-------------------------------------------
 
 So far so good, but many times, even if reluctant, we have to support the infamous legacy IE versions. The main problem is that IE8 and earlier do not support the `:not` CSS pseudo-class, which is vital for our polyfill.
 
-One possible solution is to use JavaScript to set a `not-open` class whenever we remove the `open` attribute, so that we can select for it. Unfortunately old IE version discard the entire rule when they encounter a selector that they do not support, so we have either to duplicate CSS or to make use of this `not-open` class only, also in browsers that would support the `:not` pseudo-class.
+One possible solution is to use JavaScript to set a `not-open` class on the `details` tag whenever we remove the `open` attribute, so that we can target it in CSS. Unfortunately old IE versions discard the entire rule when they encounter a selector that they do not support, so we have either to duplicate CSS or to make use of this `not-open` class only, also in browsers that would support the `:not` pseudo-class.
 
 Also, we have to set this class on every non-open `details` tag upon page load and whenever new `details` elements are added to the DOM. This deviates from the standard behavior, and needs additional effort whenever we make use of lazy client-side rendering.
 
@@ -180,7 +180,7 @@ if ( !detailsSupported ) {
 })();
 ```
 
-The CSS for legacy IE versions is the same as the one before, but using the `not-open` class instead of `:not([open])`:
+The CSS for legacy IE versions looks almost the same as the one before, but it targets the `not-open` class instead of `:not([open])`:
 
 ```css
 \* Hide the marker in Chrome *\
