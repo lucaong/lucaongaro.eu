@@ -5,7 +5,8 @@ body > header[role=banner] {
   height: 304px;
   text-align: center;
   position: relative;
-  background: linear-gradient(left, rgba(239, 215, 175, 0.25) 50%, transparent 50%), #8f351d;
+  background-color: #8f351d;
+  background-image: url(/images/striped.png);
   background-size: 2px 2px;
   margin: 0;
   padding: 0;
@@ -52,8 +53,7 @@ body > header[role=banner] {
         left: 0;
         height: 100%;
         width: 100%;
-        background: linear-gradient(left, rgba(239, 215, 175, 0.25) 50%, transparent 50%);
-        background-size: 2px 100%;
+        background-image: url(/images/striped.png);
       }
     }
     &:before {

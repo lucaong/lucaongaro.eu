@@ -4,8 +4,7 @@ body > footer {
   color: $footer-color;
   text-shadow: darken($footer-bg, 10) 0 -1px;
   background-color: $footer-bg;
-  background: linear-gradient(left, rgba(239, 215, 175, 0.25) 50%, transparent 50%), $footer-bg;
-  background-size: 2px 100%;
+  background-image: url(/images/striped.png);
   border-top: 1px solid $footer-border-top;
   position: relative;
   padding-top: 1em;
