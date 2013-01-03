@@ -47,7 +47,7 @@ article {
   img, video, .flash-video {
     @extend .flex-content;
     @extend .basic-alignment;
-    @include shadow-box;
+    @include shadow-box( 2px solid #fff, 0 1px 2px rgba(0, 0, 0, 0.5), none );
   }
   video, .flash-video { margin: 0 auto 1.5em; }
   video { display: block; width: 100%; }
@@ -91,6 +91,18 @@ article + article {
 }
 #content .blog-index {
   padding: { top: 0; bottom: 0; }
+  article.intro {
+    background: $noise-bg, $intro-bg;
+    overflow: auto;
+    img.avatar {
+      float: left;
+      margin: 0 1.5em 1em 0;
+      height: 130px;
+      @media (max-width: 992px) {
+        height: 7em;
+      }
+    }
+  }
   article { padding-top: 2em; }
   article header { background: none; padding-bottom: 0; }
   article h1 {
