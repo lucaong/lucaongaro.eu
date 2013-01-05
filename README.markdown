@@ -2,7 +2,7 @@
 
 Visit it at http://www.lucaongaro.eu
 
-## Octopress
+## Info and License
 This website is powered by my customized version of [Octopress](http://octopress.org). While the design and content of this website are my own copyright (which means that I kindly ask you to make me know if you want to copy part of it. I reserve all the rights, but in most cases I would probably give you my permission to use it), Octopress is MIT licensed, and you can find the original Octopress license below:
 
 ## Octopress License
