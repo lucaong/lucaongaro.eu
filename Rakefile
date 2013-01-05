@@ -8,7 +8,7 @@ ssh_user       = "user@domain.com"
 ssh_port       = "22"
 document_root  = "~/website.com/"
 rsync_delete   = false
-deploy_default = "push"
+deploy_default = "push_github"
 
 # This will be configured for you when you run config_deploy
 deploy_branch  = "master"
@@ -257,6 +257,13 @@ multitask :push do
     system "git push origin #{deploy_branch} --force"
     puts "\n## Github Pages deploy complete"
   end
+end
+
+desc "push to github and let the webhook do the rest (no github pages)"
+task :push_github do
+  puts "## Pushing master to GitHub (you set a webhook for deploying, didn't you?)"
+  system "git checkout master"
+  system "git push origin master"
 end
 
 desc "Update configurations to support publishing to root or sub directory"
