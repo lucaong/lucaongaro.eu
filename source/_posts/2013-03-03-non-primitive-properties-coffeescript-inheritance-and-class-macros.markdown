@@ -8,7 +8,7 @@ categories: [JavaScript, CoffeeScript, inheritance]
 
 JavaScript's prototypal inheritance paradigm is easy to understand, but can
 lead to nasty surprises when it comes to non-primitive properties. While the
-issue I discuss here is a purely JavaScript one, the fact that the awesome
+issue I discuss here is purely a JavaScript one, the fact that the awesome
 CoffeeScript syntax make it so easy to implement classes and extend them leads
 developers to run more frequently into this kind of situations.
 
@@ -17,9 +17,9 @@ The Issue with Non-Primitive Properties
 ---------------------------------------
 
 The issue can occur whenever we have a CoffeeScript class (or JavaScript
-constructor) with a property which is not of a primitive type (here an `Array`,
-but basically anything which is not `number`, `string`, `boolean`, `null` nor
-`undefined`):
+constructor) with a property which is not of a primitive type (basically
+anything which is not `number`, `string`, `boolean`, `null` nor `undefined`).
+For example, let's have a class with an `Array` property:
 
 ```coffeescript
 class Person
@@ -35,17 +35,24 @@ maker = new Person
 
 maker.needs.push "create"
 
-console.log maker.needs # => ["eat", "drink", "breath", "create"]
+console.log maker.needs
+# => ["eat", "drink", "breath", "create"]
 # Ok, looks good
 
-console.log guy.needs   # => ["eat", "drink", "breath", "create"]
+console.log guy.needs
+# => ["eat", "drink", "breath", "create"]
 # Wait... what? `guy` got the "create" need added too?!?
 ```
 
-This issue occurs because the `needs` property is stored in the shared
-`[[Prototype]]`. If we reassign the property on an instance, it gets its own
-version, but if we only modify the property, it stays in the `[[Prototype]]`
-and the changes are shared among instances.
+Changing one instance led to unwanted changes to other instances too! This
+issue occurs because the `needs` property is stored in the shared
+`[[Prototype]]`.
+
+Note that if we overwritten the property on one instance everything would have
+been fine, since the overwritten value would live on that particular instance
+only. But if we only modify the property, it stays in the `[[Prototype]]` and
+the changes are shared among instances. This is why this issue can only occur
+with non-primitive properties: primitives are immutable.
 
 <!-- more -->
 
@@ -63,9 +70,9 @@ class Person
 ```
 
 Alternatively, it is possible to proxy changes to this property through a
-method, that takes care of cloning the property in the object before changing
-it. It is ok to share the property in the `[[Prototype]]`, and move it in the
-object only if and when we modify it:
+method that takes care of cloning the property in the object before changing
+it. In fact, it is perfectly ok to share the property in the `[[Prototype]]`,
+as long as we move it in the object if and when we modify it:
 
 ```coffeescript
 class Person
@@ -83,15 +90,18 @@ maker = new Person
 
 maker.addNeed "create"
 
-console.log maker.needs # => ["eat", "drink", "breath", "create"]
-console.log guy.needs   # => ["eat", "drink", "breath"]
+console.log maker.needs
+# => ["eat", "drink", "breath", "create"]
+
+console.log guy.needs
+# => ["eat", "drink", "breath"]
 # Working as expected :)
 ```
 
 This fixes the problem and also maintains the property in the `[[Prototype]]`,
 which has the advantage of making the property inheritable when the class is
-extended, even if we change the constructor function. Obviously, all changes to
-the property need to happen through the accessor methods and not directly
+extended, even if we override the constructor function. Obviously, all changes
+to the property need to happen through the accessor methods and not directly
 manipulating it (it is a good idea to prefix the property name with "_", to
 indicate that it should be considered private).
 
@@ -111,7 +121,7 @@ is executed in the scope of the newly-defined class:
 class LivingBeing
   # Class method to be used as a class macro:
   @addNeeds: ( needs... ) ->
-    # Create the needs array on `LivingBeing.prototype` if necessary
+    # Create the needs array on `LivingBeing.prototype`
     @::needs ?= []
     # Push needs
     @::needs.push need for need in needs
@@ -120,27 +130,34 @@ class Person extends LivingBeing
   @addNeeds "eat", "drink", "breath"
 
 guy = new Person
-console.log guy.needs # => ["eat", "drink", "breath"]
+console.log guy.needs
+# => ["eat", "drink", "breath"]
 # Ok, works like expected
 ```
 
-It is clear, though, that we are running into the same issue as before:
+It is clear, though, that we are running into an issue related to the one
+discussed before:
 
 ```coffeescript
 class Maker extends Person
   @addNeeds "create"
 
 maker = new Maker
-console.log maker.needs # => ["eat", "drink", "breath", "create"]
+console.log maker.needs
+# => ["eat", "drink", "breath", "create"]
 # Ok so far
 
-console.log guy.needs # => ["eat", "drink", "breath", "create"]
+console.log guy.needs
+# => ["eat", "drink", "breath", "create"]
 # Oooops... we added the "create" need to the regular guy too!
 ```
 
-Again, we can use the strategy described before to fix the `addNeeds` class
-macro, maintaining the property deeper in the prototype chain as long as it's
-not modified, and copying it over when changed:
+Again, if we modify a property stored in the `[[Prototype]]`, it is shared
+among all instances (which is ok in this case) and also among all objects in
+the prototype chain that do not override the property (which is NOT what we
+want). Luckily, we can use the strategy described before to fix the `addNeeds`
+class macro, maintaining the property deeper in the prototype chain as long as
+it's not modified, and copying it over when changed:
 
 ```coffeescript
 class LivingBeing
