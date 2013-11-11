@@ -81,7 +81,7 @@ object IBAN {
   def unapply( code: String ): Option[(String, String)] = {
     // Match a Regex for format
     // validation and decomposing
-    val IBANPattern = """([A-Z]{2})(\d){2}([A-Z0-9]{12,27})""".r
+    val IBANPattern = """([A-Z]{2})(\d{2})([A-Z0-9]{12,27})""".r
 
     code match {
       case IBANPattern( country, check, account ) =>
