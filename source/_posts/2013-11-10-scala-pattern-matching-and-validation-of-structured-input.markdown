@@ -26,15 +26,16 @@ on the country, but they all follow certain rules:
 
 Imagine that our system needs to accept an IBAN from user input, validate it,
 and decompose it into its part so that we can use it. One naive way would be to
-create different methods that takes care of validation and access to the
-various components of the IBAN code:
+create a wrapper class with different methods that takes care of validation and
+access to the various components of the IBAN code:
 
 ```scala
 // Suboptimal example.
 // A better solution is explained after
 class IBAN( code: String ) {
   def isValid: Boolean = {
-    // Perform checksum validation here...
+    // Perform format validation
+    // and checksum validation here...
   }
 
   def country = {
@@ -52,6 +53,8 @@ validate and decompose it before use, so this solution would lead to a big
 amount of repetition and the risk of forgetting to handle invalid codes:
 
 ```scala
+// Assume userInput is a user provided string,
+// like "GB82123876b87876b" or "invalidIBAN"
 val iban = new IBAN( userInput )
 
 if ( iban.isValid ) {
@@ -69,9 +72,9 @@ if ( iban.isValid ) {
 }
 ```
 
-A much better way is to create our custom extractor, to enable pattern matching
-on valid IBAN strings (explaining custom extractors is not in the scope of this
-post, but if needed you can read [this awesome article](http://danielwestheide.com/blog/2012/11/21/the-neophytes-guide-to-scala-part-1-extractors.html)):
+We can improve a lot on this by creating a custom extractor, enabling pattern
+matching on valid IBAN strings (explaining custom extractors is not in the
+scope of this post, but if needed you can read [this awesome article](http://danielwestheide.com/blog/2012/11/21/the-neophytes-guide-to-scala-part-1-extractors.html)):
 
 ```scala
 object IBAN {
@@ -103,10 +106,12 @@ object IBAN {
 ```
 
 This extractor makes it possible to match a string and, in case it is a valid
-IBAN, obtain its components. Pattern matching in this situation makes handling
+IBAN, extract its components. Pattern matching in this situation makes handling
 of valid and invalid IBAN very explicit:
 
 ```scala
+// Assume userInput is a user provided string,
+// like "GB82123876b87876b" or "invalidIBAN"
 userInput match {
   case IBAN( country, account ) =>
     // ...valid IBAN, do something with it
@@ -131,8 +136,9 @@ userInput match {
 }
 ```
 
-The code that handles validation and decomposition stays in one single object,
-only responsible of these two operation that always go together. Freed from
-validation/decomposition concerns, the rest of the application code also
+The code that handles validation and decomposition stays in one single place,
+only responsible of these two operation that always go together. We also
+removed the need of a wrapping class, so we only work with plain strings. Freed
+from validation/decomposition concerns, the rest of the application code also
 becomes very legible, with a clear and symmetric way to handle the case of
 invalid input.
