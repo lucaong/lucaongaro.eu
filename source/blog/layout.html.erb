@@ -1,0 +1,26 @@
+<% wrap_layout :layout do %>
+  <article>
+    <section>
+      <h1>
+        <%= current_article.title %>
+        <small><%= current_article.date.strftime('%b %e, %Y') %></small>
+      </h1>
+
+      <figure class="profile small">
+        <img src="/images/luca_ongaro.png" alt="Luca Ongaro">
+        <figcaption>
+          I am Luca Ongaro, software engineer and web developer. I am fond of algorithms and data structures, data science and writing Elixir, Clojure, Ruby, Scala, JavaScript, Rust and more.
+        </figcaption>
+      </figure>
+
+      <%= yield %>
+    </article>
+
+    <aside class="tags">
+      <ul>
+        <% current_article.tags.each do |tag| %>
+          <li><%= link_to tag, tag_path(tag) %></li>
+        <% end %>
+      </ul>
+    </aside>
+<% end %>
