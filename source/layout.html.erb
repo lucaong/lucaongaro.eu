@@ -13,8 +13,7 @@
       <nav>
         <h1><b>Luca Ongaro</b></h1>
         <ol>
-          <li><a href="/">Home</a></li>
-          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/">Blog</a></li>
           <li><a href="/about.html">About</a></li>
           <li><a href="/projects.html">Projects</a></li>
         </ol>
@@ -22,5 +21,10 @@
     </header>
 
     <%= yield %>
+
+    <footer>
+      <span><%= link_to 'RSS feed', '/blog/feed.xml' %></span>
+      <span>&copy; Luca Ongaro</span>
+    </footer>
   </body>
 </html>

@@ -30,9 +30,6 @@ header {
   border-bottom: 2px solid rgba(0, 0, 0, 0.3);
 }
 
-header nav {
-}
-
 header nav h1 {
   display: flex;
   justify-content: space-between;
@@ -47,6 +44,7 @@ header nav h1 b {
   display: block;
   line-height: 3rem;
   padding: 0 1rem;
+  font-weight: 600;
 }
 
 header nav h1::before {
@@ -98,16 +96,37 @@ header nav:hover ol {
   display: block;
 }
 
-section, figure, p {
+main, article {
+  font-family: "Georgia", "Cambria", serif;
+  font-size: 1rem;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.57;
+  margin: 4rem 1rem 0 1rem;
   padding: 0;
-  margin: 0 0 1rem 0;
 }
 
-p.drop-caps:first-letter, article p:first-of-type:first-letter {
+footer {
+  font-family: "Open Sans", sans-serif;
+  font-size: 0.68em;
+  padding: 1rem;
+  border-top: 1px solid rgba(22, 82, 128, 0.2);
+  color: #555;
+}
+
+body > footer > span:not(:last-child):after {
+  content: " | ";
+}
+
+section, figure, p {
+  padding: 0;
+  margin: 0 0 0.5em 0;
+}
+
+article > p:first-of-type:first-letter {
   float: left;
   font-size: 5em;
   line-height: 0.6em;
-  padding: 0.2em 0.15em 0 0; 
+  padding: 0.2em 0.15em 0 0;
   color: #135280;
   -webkit-initial-letter: 3;
   initial-letter: 3;
@@ -127,15 +146,6 @@ h1 small, h2 small {
   display: block;
 }
 
-main, article {
-  font-family: "Georgia", "Cambria", serif;
-  font-size: 1rem;
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.57;
-  margin: 4rem 1rem 0 1rem;
-  padding: 0;
-}
-
 h1 {
   font-size: 1.5rem;
   text-transform: capitalize;
@@ -150,6 +160,10 @@ h3 {
   font-size: 1rem;
 }
 
+p + h1, p + h2, p + h3 {
+  margin-top: 1em;
+}
+
 p {
   text-align: left;
   hyphens: auto;
@@ -162,6 +176,19 @@ p {
   hyphenate-limit-zone: 7%;
   hyphenate-limit-last: always;
   font-variant-ligatures: common-ligatures;
+}
+
+blockquote {
+  margin: 1em 0 1em 1.5em;
+  font-style: italic;
+}
+blockquote cite {
+  display: block;
+  text-align: right;
+  font-size: 0.889em;
+}
+blockquote cite:before {
+  content: '– ';
 }
 
 a {
@@ -226,7 +253,7 @@ abbr {
 }
 .latest-posts .read-more {
   display: block;
-  margin-top: -1em;
+  margin-top: -0.5em;
   text-align: right;
 }
 
@@ -298,7 +325,7 @@ abbr {
     border: none;
   }
 
-  header nav, main, article {
+  header nav, main, article, footer {
     max-width: 55rem;
     margin: 0 auto;
   }
