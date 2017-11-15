@@ -18,7 +18,7 @@ through those lenses, similarly to philosophers belonging to different schools.
 
 On one hand, this is often a good thing: these disciplines provide us with a
 useful model of our programming reality and with ways to navigate it. On the
-other, strong beliefs might cause us to end up stuck with our own stance, unable
+other, strong beliefs might cause us to end up stuck on our own stance, unable
 to see the merits of a different view point. It is not unusual to witness
 developers belonging to different schools of thought vehemently argue over some
 technical decision, each strenuously defending their own view of the
@@ -65,7 +65,7 @@ In a web application for example, runtime often means the development machine on
 which code is written, or the test environment. In a non-critical application,
 even when a bug slips to production, it can easily be reverted or patched with a
 new deployment. In these situations, favoring a language that makes writing
-tests convenient and shortens the code-test-deploy cycle might be the right
+tests convenient and shortens the test-code-deploy cycle might be the right
 choice. As a counter example, native mobile applications and embedded software
 follows release cycles that make it costly to deploy a fix to all users, once a
 bug is discovered. In this cases, a strong type system can help catching defects

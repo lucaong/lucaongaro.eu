@@ -1,0 +1,16 @@
+<%= Rouge::Themes::Gruvbox.render(:scope => '.highlight') %>
+
+
+.highlight pre {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  font-family: Monaco, monospace;
+  font-size: 0.889em;
+  overflow-x: scroll;
+}
+
+@media (max-width: 42em) {
+  .highlight pre .rouge-gutter {
+    display: none;
+  }
+}
