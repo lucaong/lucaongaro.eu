@@ -96,7 +96,7 @@ header nav:hover ol {
   display: block;
 }
 
-main, article {
+main {
   font-family: "Georgia", "Cambria", serif;
   font-size: 1rem;
   -webkit-font-smoothing: antialiased;
@@ -117,7 +117,7 @@ body > footer > span:not(:last-child):after {
   content: " | ";
 }
 
-section, figure, p {
+article, figure, p {
   padding: 0;
   margin: 0 0 0.5em 0;
 }
@@ -325,16 +325,16 @@ abbr {
     border: none;
   }
 
-  header nav, main, article, footer {
+  header nav, main, footer {
     max-width: 55rem;
     margin: 0 auto;
   }
 
-  main, article {
+  main {
     margin-top: 5rem;
   }
 
-  section {
+  article {
     max-width: 35rem;
     margin: 0 auto 1rem auto;
   }

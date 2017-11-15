@@ -1,6 +1,6 @@
 <% wrap_layout :layout do %>
-  <article>
-    <section>
+  <main>
+    <article>
       <h1>
         <%= current_article.title %>
         <small><%= current_article.date.strftime('%b %e, %Y') %></small>
@@ -23,4 +23,5 @@
         <% end %>
       </ul>
     </aside>
-<% end %>
+  <% end %>
+</main>
