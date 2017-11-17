@@ -12,9 +12,9 @@ and we often identify with several schools of thought. We might be, for example,
 advocates of Functional Programming, practitioners of Test Driven Development,
 or microservices enthusiasts. On top of this, we all have our preferences when
 it comes to technology: our favorite programming languages, databases,
-infrastructure, etc. These preferences shape our identity as software
-developers, and exert a profound influence on the way we think: we view problems
-through those lenses, similarly to philosophers belonging to different schools.
+infrastructure… These preferences shape our identity as software developers,
+and exert a profound influence on the way we think: we view problems through
+those lenses, similarly to philosophers belonging to different schools.
 
 On one hand, this is often a good thing: these disciplines provide us with a
 useful model of our programming reality and with ways to navigate it. On the
@@ -24,7 +24,7 @@ developers belonging to different schools of thought vehemently argue over some
 technical decision, each strenuously defending their own view of the
 (programming) World.
 
-While there is nothing wrong in recognizing the merits of some technique and
+While there is nothing wrong in recognizing the merits of a technique and in
 adopting it, we should never forget one fundamental point: pretty much every
 technical discipline or tool embodies a trade-off. Techniques and technologies
 are solutions to specific problems, and their merits or flaws are never
@@ -39,11 +39,11 @@ opportunity to innovate in ways that shift the trade-offs in a better direction.
 One prominent example of something that many software developers hold strong
 opinions about, is statically versus dynamically typed languages. Advocates of
 static typing on one hand often maintain that strong typing is absolutely
-necessary for any serious project, while on the other hand users of dynamically
-typed languages regard static typing as a tedious and mostly unnecessary
-ceremony.
+necessary for any serious project, while -- on the other hand -- users of
+dynamically typed languages regard static typing as a tedious and mostly
+unnecessary ceremony.
 
-Despite these strong beliefs, evidence shows how both approaches can be
+Despite these strong beliefs, evidence shows that both approaches can be
 extremely successful, ruling out a single objective winner of the diatribe. If
 dynamic typing cannot scale, how can we explain the existence of numerous large
 projects written in JavaScript, Python, Ruby, etc.? Let alone entire operative
@@ -147,7 +147,7 @@ where an occasional short downtime is less costly than a sustained higher effort
 on operations.
 
 Also, a centralized system is harder to scale, but on the other hand it is not
-susceptible to network partitions, so it is not subject to the [CAP
+susceptible to network partitions, hence it is not subject to the [CAP
 theorem](https://en.wikipedia.org/wiki/CAP_theorem) and can be at the same time
 available and consistent. Therefore, depending on the scale and requirements of
 a particular project, different approaches can be preferable.
@@ -165,11 +165,11 @@ availability.
 In conclusion, the software development universe is full of polarizing
 dichotomies, about which engineers often have strong opinions: Functional
 Programming versus Object Orientation, client-side versus server-side rendering,
-managed versus unmanaged languages, etc. Experience should teach us that in each
-of those dichotomies lies a trade-off, as well as boundaries of applicability.
-Reflecting on costs and benefits helps us keeping a flexible mind and
-recognizing opportunities to adopt different perspectives. Reminding ourselves
-of how every solution is contextual and never absolute, is an exercise of
-intellectual honesty necessary if we strive to be well-rounded engineers.
+performance versus maintainability, and so on. Experience should teach us that
+in each of those dichotomies lies a trade-off, as well as boundaries of
+applicability. Reflecting on costs and benefits helps us keeping a flexible mind
+and recognizing opportunities to adopt different perspectives. Reminding
+ourselves that every solution is contextual and never absolute is an exercise of
+intellectual honesty, necessary if we strive to be well-rounded engineers.
 Finally, focusing on trade-offs and context, rather than on position and
 beliefs, makes technical discussions a lot less prone to end with an impasse.
