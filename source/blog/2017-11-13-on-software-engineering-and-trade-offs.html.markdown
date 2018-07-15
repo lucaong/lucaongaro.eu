@@ -18,8 +18,8 @@ those lenses, similarly to philosophers belonging to different schools.
 
 On one hand, this is often a good thing: these disciplines provide us with a
 useful model of our programming reality and with ways to navigate it. On the
-other, strong beliefs might cause us to end up stuck on our own stance, unable
-to see the merits of a different view point. It is not unusual to witness
+other, strong beliefs might cause us to end up stuck defending our own stance,
+unable to see the merits of a different view point. It is not unusual to witness
 developers belonging to different schools of thought vehemently argue over some
 technical decision, each strenuously defending their own view of the
 (programming) World.
@@ -30,9 +30,9 @@ technical discipline or tool embodies a trade-off. Techniques and technologies
 are solutions to specific problems, and their merits or flaws are never
 absolute, but always bound to the context. Being aware of where these trade-offs
 lie is necessary not only to operate the right choices of tech, but also to
-maintain an open and flexible mind capable of recognizing when to change
-approach. Moreover, knowing where costs and benefits lie, provide us with the
-opportunity to innovate in ways that shift the trade-offs in a better direction.
+maintain an open and flexible mind, capable of changing approach when necessary.
+Moreover, knowing where costs and benefits lie, provide us with the opportunity
+to innovate in ways that shift the trade-offs in a better direction.
 
 ## Static vs. Dynamic Typing
 
@@ -46,13 +46,15 @@ unnecessary ceremony.
 Despite these strong beliefs, evidence shows that both approaches can be
 extremely successful, ruling out a single objective winner of the diatribe. If
 dynamic typing cannot scale, how can we explain the existence of numerous large
-projects written in JavaScript, Python, Ruby, etc.? Let alone entire operative
-systems commonly being written in C, which, while not dynamically typed, can
-hardly be considered a strongly typed language. Equally, if static typing only
-hinders productivity and expressiveness, how do we account for the vast numbers
-of successful projects employing strong type systems? The same can be said about
-evidence for demerits: no matter how opinionated we might be, we can at least
-agree that terrible code can be written in any practical language.
+projects written in JavaScript, Python, Ruby, etc.? Let alone the immense
+success of C as a system programming language, which, while definitely not
+dynamically typed, can hardly be considered a strong type system. Equally, if it
+was true that static typing only hinders productivity and expressiveness, how
+could we account for the vast number of widely adopted strongly type languages,
+and their evident success on the field? The situation is not different if we
+turn our attention to demerits: no matter how opinionated we might be on one
+side or the other, we can at least agree that terrible code can be written in
+any practical language, no matter the type system.
 
 Therefore, instead of adopting an absolute view point, let's try to focus
 on the trade-offs of these two approaches. One way to look at it, is that static
@@ -61,28 +63,30 @@ effort to express solutions in code. Seen through these lenses, we can start
 appreciating how contextual the specific merits of both disciplines are. The
 cost of runtime errors is indeed vastly different for each specific application.
 
-In a web application for example, runtime often means the development machine on
-which code is written, or the test environment. In a non-critical application,
-even when a bug slips to production, it can easily be reverted or patched with a
-new deployment. In these situations, favoring a language that makes writing
-tests convenient and shortens the test-code-deploy cycle might be the right
-choice. As a counter example, native mobile applications and embedded software
-follows release cycles that make it costly to deploy a fix to all users, once a
+In a web application for example, "runtime" often means the development machine
+on which code is written, or the automated test environment. In a non-critical
+application adopting continuous delivery, even when the occasional bug slips to
+production, it can easily be reverted or patched with a new deployment. In these
+situations, favoring a language that makes it convenient to write automated
+tests, and shortens the test-code-deploy cycle, might often be the right choice.
+As a counter example, native mobile applications and embedded software follow
+release cycles that make it costly to deploy a fix to all users, if a runtime
 bug is discovered. In this cases, a strong type system can help catching defects
-and inconsistencies before it's too late, and is worth some more effort to
-get our software to compile.
+and inconsistencies before it's too late, and is worth some more effort to get
+our software to compile.
 
-One objection can be that we should strive to minimize defects, no matter if
-they are more or less costly. That is of course true, but the point is that this
-minimization is subject to a cost structure, and the optimal solution depends on
-those costs. If that wasn't the case, we would witness a world of
-absolutely bug-free software. The reality is quite different, and our job comes
-with a fair share of risk management considerations.
+One objection to this line of reasoning could be that we should strive to
+minimize defects, no matter if they are more or less costly. That is of course
+true, but the point is that this minimization is subject to a cost structure,
+and the optimal solution depends on those costs. If that wasn't the case, we
+would witness a world of absolutely bug-free software. The reality is quite
+different, and our job as engineers comes necessarily with a fair share of risk
+management considerations.
 
 Of course there are other trade-offs at play, such as the extent to which IDEs
-can help us, versus the redundancy of the hints we have to give to IDEs or
-compilers. Again, the point is that being aware of them makes us better equipped
-to make informed decisions.
+can help us, versus the redundancy of the hints we have to give to compilers for
+them to help us catching inconsistencies. Again, the point is that being aware
+of them makes us better equipped to make informed decisions.
 
 There are numerous examples of innovations on both sides that all rely on an
 awareness of these trade-offs and a conscious effort to improve on them. Type
@@ -100,21 +104,23 @@ distinction more like a gradient of possibilities than a binary choice.
 Another example of a polarizing diatribe is microservices versus monolithic
 architectures. The term "monolith" is already subtly conveying an association
 with something old and clumsy, almost prehistoric, testifying how heated the
-debate is. Equally, the internet is bubbling with examples of microservice
-architectures gone awry. But once again, let's try to improve the
-conversation by focusing on trade-offs of the respective solutions.
+debate is. Equally, the Internet is bubbling with examples of microservice
+architectures gone awry. But once again, let's try to steer the conversation
+away from fruitless animosity by focusing on trade-offs of the respective
+solutions.
 
-Microservices divide an application in separate artifacts communicating with
-each other passing messages through standardized interfaces, usually (but not
-exclusively) implemented as HTTP APIs. As such, microservice architectures make
-it easier to evolve and improve at the level of the single service: if the
-interface stays the same, a service can be completely rewritten without the
-other services even noticing. On the other hand, they make the boundaries
-between services way more rigid: changing those boundaries requires careful
-coordination between different services, and often between different teams.
+Microservices divide an application in separate and independent artifacts
+communicating with each other passing messages through standardized interfaces,
+usually (but not exclusively) implemented as HTTP APIs. As such, microservice
+architectures make it easier to evolve and improve at the level of the single
+service: as long as the interface stays the same, a service can be completely
+rewritten without the other services even noticing. On the other hand,
+microservices make the boundaries between services way more rigid: changing
+those boundaries requires careful coordination between different services, and
+often between different teams.
 
 Depending on the life cycle of a project, and on how stable the functional
-boundaries can be expected to be, this trade-off can change dramatically, making
+boundaries are expected to be, this trade-off can change dramatically, making
 one approach or the other preferable or problematic. This dynamic is not
 exclusive of our industry: in management studies, this trade-off is known as
 modularity vs. integrality, and there are plenty of case studies showing how
@@ -125,7 +131,7 @@ Once again, being aware of these costs and benefits, makes it possible to
 consider the context in which we operate our decisions. Moreover, we often have
 the possibility to shift the balance or hedge the risks, for example by adopting
 a modular architecture even within a single service, or splitting our services
-only where the risk of getting the boundary wrong is low enough.
+only where boundaries are well known and stable.
 
 ## Distributed Systems vs. Centralized Systems
 
@@ -137,39 +143,41 @@ this approach outline the benefits of distribution when it comes to scaling and
 resilience, but the wave of innovation brought also a certain disdain for
 centralized solutions.
 
-Once again, if distributed systems are a welcome addition to our choice of
-technologies, their advantages do not come without a cost. A distributed system
+Distributed systems are a welcome addition to our choice of technologies, but
+once again, their advantages do not come without a cost. A distributed system
 reduces the chances of a failure of the whole system, at the cost of having to
-run more instances, therefore incurring in some overhead, and increasing the
-chances that any single instance will fail, requiring intervention. This might
-seem like a reasonable trade-off to accept, but there are products or teams
-where an occasional short downtime is less costly than a sustained higher effort
-on operations.
+run and coordinate several nodes, therefore incurring in some overhead, and
+increasing the chances that any single node will fail, requiring intervention.
+This might seem like a reasonable trade-off to accept, but there are products or
+teams where an occasional short downtime is more acceptable than a sustained
+higher effort on operations.
 
-Also, a centralized system is harder to scale, but on the other hand it is not
+A centralized system is harder to scale, but on the other hand it is not
 susceptible to network partitions, hence it is not subject to the [CAP
 theorem](https://en.wikipedia.org/wiki/CAP_theorem) and can be at the same time
 available and consistent. Therefore, depending on the scale and requirements of
-a particular project, different approaches can be preferable.
+a particular project, different approaches are preferable.
 
 By keeping this trade-off in mind, and by knowing the specific context and
-requirements of a project, we enable ourselves to make informed decisions, and
-to consciously mitigate the risks that come with our selection of technology.
-Centralized systems can be backed-up and replicated, while distributed systems
-call for more automated operations and an application design that takes into
-consideration the limits of the system, when it comes to consistency or
+requirements of a project, we are able to make informed decisions, and to
+consciously mitigate the risks that come with our technology of choice.
+Furthermore, centralized systems can be backed-up and replicated, and
+distributed systems can alleviate the operational burden by automating some
+operations, and by adopting an application design that takes into consideration
+from the beginning the limits of the system, when it comes to consistency or
 availability.
 
 ## Conclusions
 
 In conclusion, the software development universe is full of polarizing
-dichotomies, about which engineers often have strong opinions: Functional
-Programming versus Object Orientation, client-side versus server-side rendering,
-performance versus maintainability, and so on. Experience should teach us that
-in each of those dichotomies lies a trade-off, as well as boundaries of
+dichotomies, and engineers often have strong opinions: Functional Programming
+versus Object Orientation, client-side versus server-side rendering, performance
+versus maintainability, and so on. Experience should teach us that in each of
+those dichotomies lies a trade-off, as well as different boundaries of
 applicability. Reflecting on costs and benefits helps us keeping a flexible mind
-and recognizing opportunities to adopt different perspectives. Reminding
-ourselves that every solution is contextual and never absolute is an exercise of
-intellectual honesty, necessary if we strive to be well-rounded engineers.
-Finally, focusing on trade-offs and context, rather than on position and
-beliefs, makes technical discussions a lot less prone to end with an impasse.
+and recognizing opportunities to adopt different strategies. Reminding ourselves
+that every solution is contextual and never absolute is an exercise of
+intellectual honesty, if we strive to be well-rounded engineers. Finally,
+focusing on trade-offs and context, rather than on position and beliefs, makes
+technical discussions a lot more enjoyable and less prone to end with an
+impasse.
