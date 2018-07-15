@@ -1,12 +1,12 @@
 ---
 
-title: On Software Engineering And Trade-Offs
+title: On Engineering Software and Trade-Offs
 date: 2017-11-13 13:36 UTC
 tags: engineering, trade-offs, programming
 
 ---
 
-As software engineers, we tend to be quite opinionated about our tools and
+As software developers, we tend to be quite opinionated about our tools and
 techniques. Our own specific education and experiences shape our preferences,
 and we often identify with several schools of thought. We might be, for example,
 advocates of Functional Programming, practitioners of Test Driven Development,
