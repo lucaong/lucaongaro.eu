@@ -1,28 +1,30 @@
 <%= Rouge::Themes::Gruvbox.render(:scope => '.highlight') %>
 
 
-.highlight pre {
+.highlight pre.highlight {
   margin: 1rem -4rem;
   padding: 0.5rem;
   font-family: Monaco, monospace;
+  font-size: 1rem;
   font-size: 0.889em;
   overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
 }
-.highlight pre .rouge-gutter {
+.highlight pre.highlight .rouge-gutter {
   opacity: 0.3;
 }
 
 @media (min-width: 44rem) and (max-width: 48rem) {
-  .highlight pre {
+  .highlight pre.highlight {
     margin: 1rem -2rem;
   }
 }
 
 @media (max-width: 44rem) {
-  .highlight pre .rouge-gutter {
+  .highlight pre.highlight .rouge-gutter {
     display: none;
   }
-  .highlight pre {
+  .highlight pre.highlight {
     margin: 1rem -1rem;
     padding: 0.2rem;
   }
