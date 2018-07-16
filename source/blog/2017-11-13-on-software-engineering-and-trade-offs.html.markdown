@@ -9,7 +9,7 @@ tags: engineering, trade-offs, programming
 As software developers, we tend to be quite opinionated about our tools and
 techniques. Our own specific education and experiences shape our preferences,
 and we often identify with several schools of thought. We might be, for example,
-advocates of Functional Programming, practitioners of Test Driven Development,
+advocates of functional programming, practitioners of test driven development,
 or microservices enthusiasts. On top of this, we all have our preferences when
 it comes to technology: our favorite programming languages, databases,
 infrastructure… These preferences shape our identity as software developers,
@@ -170,8 +170,8 @@ availability.
 ## Conclusions
 
 In conclusion, the software development universe is full of polarizing
-dichotomies, and engineers often have strong opinions: Functional Programming
-versus Object Orientation, client-side versus server-side rendering, performance
+dichotomies, and engineers often have strong opinions: functional programming
+versus object orientation, client-side versus server-side rendering, performance
 versus maintainability, and so on. Experience should teach us that in each of
 those dichotomies lies a trade-off, as well as different boundaries of
 applicability. Reflecting on costs and benefits helps us keeping a flexible mind
