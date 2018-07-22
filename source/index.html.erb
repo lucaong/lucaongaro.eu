@@ -8,9 +8,9 @@ per_page: 10
     <figure class="profile">
       <%= image_tag 'luca_ongaro.png', alt: 'Luca Ongaro' %>
       <figcaption>
-          I am Luca Ongaro, engineer and software developer. I love to write
-          software and to craft products. When I grow up, I want to be a
-          scientist.
+        I am Luca Ongaro, engineer. I like to make software things. I love
+        being surprised by a clever solution to a difficult problem, and I
+        revere the scientific method.
       </figcaption>
     </figure>
   <% end %>
@@ -23,7 +23,7 @@ per_page: 10
     <ol class="latest-posts">
       <li>
         <% page_articles.each_with_index do |article, i| %>
-          <h2><%= link_to article.title, article %> <small><%= article.date.strftime('%b %e, %Y') %></small></h2> 
+          <h2><%= link_to article.title, article %> <small><%= article.date.strftime('%b %e, %Y') %></small></h2>
           <%= article.summary(300, '…') %>
           <span class="read-more"><%= link_to 'read full post', article %></span>
         <% end %>
