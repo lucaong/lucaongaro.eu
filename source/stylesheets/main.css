@@ -3,7 +3,7 @@
 }
 
 html {
-  font-family: "Georgia", "Cambria", serif;
+  font-family: "Martel", "Georgia", "Cambria", serif;
   font-size: 18px;
   text-rendering: optimizeLegibility;
 }
@@ -97,8 +97,7 @@ header nav:hover ol {
 }
 
 main {
-  font-family: "Georgia", "Cambria", serif;
-  font-size: 1.167rem;
+  font-family: "Martel", "Georgia", "Cambria", serif;
   -webkit-font-smoothing: antialiased;
   line-height: 1.57;
   margin: 4rem 1rem 0 1rem;
