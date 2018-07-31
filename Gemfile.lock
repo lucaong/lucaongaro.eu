@@ -116,7 +116,7 @@ DEPENDENCIES
   nokogiri (~> 1.7.2)
   redcarpet (~> 3.3, >= 3.3.3)
   tzinfo-data
-  wdm (~> 0.1.0)
+  wdm (~> 0.1)
 
 BUNDLED WITH
-   1.16.1
+   1.16.3
