@@ -15,7 +15,7 @@ gem "middleman-syntax", "~> 3.0.0"
 
 gem 'redcarpet', '~> 3.3', '>= 3.3.3'
 
-gem 'nokogiri', '~> 1.7.2'
+gem 'nokogiri', '~> 1.8'
 
 # For feed.xml.builder
 gem "builder", "~> 3.0"
