@@ -110,7 +110,7 @@ PLATFORMS
 
 DEPENDENCIES
   builder (~> 3.0)
-  middleman (~> 4.1)
+  middleman (~> 4.2)
   middleman-blog (~> 4.0.2)
   middleman-syntax (~> 3.0.0)
   nokogiri (~> 1.7.2)
