@@ -10,11 +10,11 @@
     <name>Blog Author</name>
   </author>
   <entry>
-    <title>Delay jobs in the future with Rails and RabbitMQ</title>
+    <title>Delayed jobs with Rails and RabbitMQ</title>
     <link rel="alternate" href="http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html"/>
     <id>http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html</id>
     <published>2018-07-31T15:34:00+02:00</published>
-    <updated>2018-07-31T17:46:35+02:00</updated>
+    <updated>2018-07-31T19:23:46+02:00</updated>
     <author>
       <name>Article Author</name>
     </author>
