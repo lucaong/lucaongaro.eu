@@ -1,6 +1,6 @@
 ---
 
-title: Delay jobs in the future with Rails and RabbitMQ
+title: Delayed jobs with Rails and RabbitMQ
 date: 2018-07-31 15:34 CEST
 tags: activejob, jobs, rabbitmq, rails, sneakers, delayed, ruby, programming
 
