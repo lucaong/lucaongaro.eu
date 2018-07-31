@@ -14,7 +14,10 @@
   <body>
     <header>
       <nav>
-        <h1><b>Luca Ongaro</b></h1>
+        <h1>
+          <div class="burger-menu"></div>
+          <b>Luca Ongaro</b>
+        </h1>
         <ol>
           <li><a href="/">Blog</a></li>
           <li><a href="/contact_me.html">Contact Me</a></li>
@@ -28,5 +31,13 @@
       <span><%= link_to 'RSS feed', '/blog/feed.xml' %></span>
       <span>&copy; Luca Ongaro</span>
     </footer>
+
+    <script type="text/javascript">
+      var nav = document.querySelector('header nav')
+      var burgerMenu = nav.querySelector('.burger-menu')
+      burgerMenu.addEventListener('click', function () {
+        nav.classList.toggle('open')
+      })
+    </script>
   </body>
 </html>
