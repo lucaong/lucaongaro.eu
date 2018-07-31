@@ -14,10 +14,10 @@ or microservices enthusiasts. On top of this, we all have our preferences when
 it comes to technology: our favorite programming languages, databases,
 infrastructure… These preferences shape our identity as software developers,
 and exert a profound influence on the way we think: we view problems through
-those lenses, similarly to philosophers belonging to different schools.
+those lenses, and determine the way we envision solutions.
 
 On one hand, this is often a good thing: these disciplines provide us with a
-useful model of our programming reality and with ways to navigate it. On the
+useful model of the programming reality and with ways to navigate it. On the
 other, strong beliefs might cause us to end up stuck defending our own stance,
 unable to see the merits of a different view point. It is not unusual to witness
 developers belonging to different schools of thought vehemently argue over some
