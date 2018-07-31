@@ -84,15 +84,15 @@ from the
 | Active Job Async  | Yes   | Yes    | Yes        | No         | No      | No      |
 | Active Job Inline | No    | Yes    | N/A        | N/A        | N/A     | N/A     |
 </pre></td></tr></tbody></table></code></pre></div>
-<p>Sneakers and RabbitMQ are a perfect fit for my specific application: we
-leverage the highly available queues and versatile semantics of RabbitMQ for
-several use-cases, involving services written in other languages than Ruby. For
-example, our RabbitMQ exposes a MQTT frontend that collects metrics from our IoT
-devices, and makes it possible to implement several decoupled data processing
-pipelines, something cumbersome to implement with Rails-specific queuing
-mechanisms. Therefore, changing the queue backend just for this feature was not
-a desireable option: I decided to implement the missing feature instead, and I
-will show you how.</p>
+<p>Sneakers and RabbitMQ are a perfect fit for my specific application: we leverage
+the highly available queues and versatile AMQP semantics for several use-cases,
+involving services written in other languages than Ruby. For example, our
+RabbitMQ exposes a MQTT frontend that collects metrics from our IoT devices, and
+makes it possible to implement several decoupled data processing pipelines,
+something cumbersome to implement with Rails-specific queuing mechanisms.
+Therefore, changing the queue backend just for this feature was not a desireable
+option: I decided to implement the missing feature instead, and I will show you
+how.</p>
 
 <p>Luckily, there exists a well designed RabbitMQ plugin that does exactly what I
 needed, so I just had to write the adapter logic for it. The plugin is called
