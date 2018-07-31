@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <title>Luca Ongaro - Delay jobs in the future with Rails and RabbitMQ</title>
+    <link href="/stylesheets/main.css" rel="stylesheet" />
+      <link href="/stylesheets/highlighting.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans|Martel|Source+Code+Pro" rel="stylesheet">
+    <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/feed.xml" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <h1><b>Luca Ongaro</b></h1>
+        <ol>
+          <li><a href="/">Blog</a></li>
+          <li><a href="/contact_me.html">Contact Me</a></li>
+        </ol>
+      </nav>
+    </header>
+
+      <main>
+    <article>
+      <h1>
+        Delay jobs in the future with Rails and RabbitMQ
+        <small>Jul 31, 2018</small>
+      </h1>
+
+      <figure class="profile small">
+        <img src="/images/luca_ongaro.png" alt="Luca Ongaro" />
+        <figcaption>
+          I am Luca Ongaro, engineer. I like to make software things. I love
+          being surprised by a clever solution to a difficult problem, and I
+          revere the scientific method.
+        </figcaption>
+      </figure>
+
+      <p>I recently had the need to schedule background jobs with a specified delay into
+the future from a <em>Ruby on Rails</em> application. I had to implement a retry
+mechanism with exponential backoff, so I needed to be able to express something
+like &ldquo;execute job X, but wait Y seconds before doing so&rdquo;. Clearly, I needed this
+mechanism to be non-blocking: if a job is scheduled 5 minutes in the future, the
+workers should be free to process other jobs in the meantime.</p>
+
+<p>Some popular <code>ActiveJob</code> adapters like Resque or Sidekiq implement this feature,
+which is exposed in the <code>ActiveJob</code> API as the <code>wait: &lt;seconds&gt;</code> option:</p>
+<div class="highlight"><pre class="highlight ruby"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="no">SomeJob</span><span class="p">.</span><span class="nf">perform_later</span><span class="p">(</span><span class="n">some_argument</span><span class="p">,</span> <span class="ss">wait: </span><span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div>
+<p>My adapter of choice though is <a href="http://jondot.github.io/sneakers/">Sneakers</a>,
+which is based on the superb <a href="https://www.rabbitmq.com">RabbitMQ</a>, but
+unfortunately, as of July 2018, does not implement delayed jobs out of the box,
+as the feature table for <code>ActiveJob::QueueAdapters</code> dutyfully reports (copied
+from the
+<a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html">official docs</a>):</p>
+<div class="highlight"><pre class="highlight plaintext"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+</pre></td><td class="rouge-code"><pre>|                   | Async | Queues | Delayed    | Priorities | Timeout | Retries |
+|-------------------|-------|--------|------------|------------|---------|---------|
+| Backburner        | Yes   | Yes    | Yes        | Yes        | Job     | Global  |
+| Delayed Job       | Yes   | Yes    | Yes        | Job        | Global  | Global  |
+| Qu                | Yes   | Yes    | No         | No         | No      | Global  |
+| Que               | Yes   | Yes    | Yes        | Job        | No      | Job     |
+| queue_classic     | Yes   | Yes    | Yes*       | No         | No      | No      |
+| Resque            | Yes   | Yes    | Yes (Gem)  | Queue      | Global  | Yes     |
+| Sidekiq           | Yes   | Yes    | Yes        | Queue      | No      | Job     |
+| Sneakers          | Yes   | Yes    | No         | Queue      | Queue   | No      |
+| Sucker Punch      | Yes   | Yes    | Yes        | No         | No      | No      |
+| Active Job Async  | Yes   | Yes    | Yes        | No         | No      | No      |
+| Active Job Inline | No    | Yes    | N/A        | N/A        | N/A     | N/A     |
+</pre></td></tr></tbody></table></code></pre></div>
+<p>Sneakers and RabbitMQ are a perfect fit for my specific application: we
+leverage the highly available queues and versatile semantics of RabbitMQ for
+several use-cases, involving services written in other languages than Ruby. For
+example, our RabbitMQ exposes a MQTT frontend that collects metrics from our IoT
+devices, and makes it possible to implement several decoupled data processing
+pipelines, something cumbersome to implement with Rails-specific queuing
+mechanisms. Therefore, changing the queue backend just for this feature was not
+a desireable option: I decided to implement the missing feature instead, and I
+will show you how.</p>
+
+<p>Luckily, there exists a well designed RabbitMQ plugin that does exactly what I
+needed, so I just had to write the adapter logic for it. The plugin is called
+<a href="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange"><code>rabbitmq_delayed_message_exchange</code></a>,
+and can be easily added to an existing RabbitMQ installation by downloading
+the binary build, putting it into the plugins directory, and enabling it.</p>
+
+<p>The plugin is well-documented and fairly straightforward to use, for those
+familiar with RabbitMQ and AMQP. In order to schedule delayed messages, one
+just has to:</p>
+
+<ol>
+<li>Declare an exchange with type <code>x-delayed-message</code>, and an extra
+ <code>x-delayed-type</code> header to indicate the desired routing semantic after the
+ delay elapsed (like &ldquo;direct&rdquo;, or &ldquo;topic&rdquo;, etc.).</li>
+<li>Publish messages on that exchange, providing an <code>x-delay</code> header indicating
+ the desired delay in milliseconds.</li>
+<li>Queues bound to the exchange will then receive the message after the given
+ delay elapses, and from this point on everything works according to the
+ standard AMQP protocol.</li>
+</ol>
+
+<p>What was missing was only the integration between this plugin and our
+Rails + ActiveJob + Sneakers setup. Essentially, I needed to publish jobs that
+specify a <code>wait: &lt;seconds&gt;</code> option using a custom publisher that uses a
+<code>x-delayed-message</code> exchange and sets the <code>x-delay</code> header, while leaving jobs
+that do not specify a delay to the standard Sneakers publisher.</p>
+
+<p>Here&rsquo;s the code I ended up writing, using <code>ActiveSupport::Concern</code> to make it
+easily pluggable to an existing <code>ActiveJob</code> class:</p>
+<div class="highlight"><pre class="highlight ruby"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+</pre></td><td class="rouge-code"><pre><span class="nb">require</span> <span class="s1">'sneakers'</span>
+
+<span class="k">module</span> <span class="nn">PerformDelayed</span>
+  <span class="kp">extend</span> <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">Concern</span>
+
+  <span class="n">class_methods</span> <span class="k">do</span>
+    <span class="k">def</span> <span class="nf">perform_later</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">opts</span><span class="p">)</span>
+      <span class="c1"># If a job does not specify `:wait`, just process it normally</span>
+      <span class="k">return</span> <span class="k">super</span> <span class="k">unless</span> <span class="n">opts</span><span class="p">.</span><span class="nf">is_a?</span><span class="p">(</span><span class="no">Hash</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="n">opts</span><span class="p">[</span><span class="ss">:wait</span><span class="p">]</span>
+
+      <span class="c1"># Otherwise, publish it on the delayed message exchange setting the</span>
+      <span class="c1"># `x-delay` header</span>
+      <span class="n">job</span> <span class="o">=</span> <span class="n">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">opts</span><span class="p">.</span><span class="nf">without</span><span class="p">(</span><span class="ss">:wait</span><span class="p">))</span>
+      <span class="n">delayed_publisher</span><span class="p">.</span><span class="nf">publish</span><span class="p">(</span>
+        <span class="no">ActiveSupport</span><span class="o">::</span><span class="no">JSON</span><span class="p">.</span><span class="nf">encode</span><span class="p">(</span><span class="n">job</span><span class="p">.</span><span class="nf">serialize</span><span class="p">),</span>
+        <span class="ss">headers: </span><span class="p">{</span> <span class="s1">'x-delay'</span> <span class="o">=&gt;</span> <span class="n">opts</span><span class="p">[</span><span class="ss">:wait</span><span class="p">].</span><span class="nf">to_i</span> <span class="o">*</span> <span class="mi">1000</span> <span class="p">},</span>
+        <span class="ss">routing_key: </span><span class="n">job</span><span class="p">.</span><span class="nf">queue_name</span><span class="p">)</span>
+
+      <span class="c1"># Log in the usual ActiveJob format, to make debugging easier</span>
+      <span class="no">Rails</span><span class="p">.</span><span class="nf">logger</span><span class="p">.</span><span class="nf">info</span><span class="p">(</span><span class="s2">"[ActiveJob] </span><span class="si">#{</span><span class="nb">self</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2"> (Job ID: </span><span class="si">#{</span><span class="n">job</span><span class="p">.</span><span class="nf">job_id</span><span class="si">}</span><span class="s2">) to PerformDelayed(</span><span class="si">#{</span><span class="n">job</span><span class="p">.</span><span class="nf">queue_name</span><span class="si">}</span><span class="s2">) with arguments: </span><span class="si">#{</span><span class="n">args</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:inspect</span><span class="p">).</span><span class="nf">join</span><span class="p">(</span><span class="s1">', '</span><span class="p">)</span><span class="si">}</span><span class="s2">, </span><span class="si">#{</span><span class="n">opts</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">delayed_publisher</span>
+      <span class="c1"># Cache the publisher at the class level, so that all job instances of</span>
+      <span class="c1"># the including class will reuse the same</span>
+      <span class="vi">@delayed_publisher</span> <span class="o">||=</span> <span class="n">create_delayed_publisher!</span>
+    <span class="k">end</span>
+
+    <span class="kp">private</span> <span class="k">def</span> <span class="nf">create_delayed_publisher!</span>
+      <span class="c1"># Idempotently create the delayed message exchange and the queue, then</span>
+      <span class="c1"># create a publisher for them</span>
+      <span class="n">opts</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="ss">exchange: </span><span class="s1">'delayed.exchange'</span><span class="p">,</span>
+        <span class="ss">exchange_options: </span><span class="p">{</span>
+          <span class="ss">type: </span><span class="s1">'x-delayed-message'</span><span class="p">,</span>
+          <span class="ss">arguments: </span><span class="p">{</span> <span class="s1">'x-delayed-type'</span> <span class="o">=&gt;</span> <span class="s1">'direct'</span> <span class="p">},</span>
+          <span class="ss">durable: </span><span class="kp">true</span><span class="p">,</span>
+          <span class="ss">auto_delete: </span><span class="kp">false</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+      <span class="n">delayed_publisher</span> <span class="o">=</span> <span class="no">Sneakers</span><span class="o">::</span><span class="no">Publisher</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">opts</span><span class="p">)</span>
+      <span class="n">delayed_publisher</span><span class="p">.</span><span class="nf">ensure_connection!</span>
+      <span class="n">queue</span> <span class="o">=</span> <span class="n">delayed_publisher</span><span class="p">.</span><span class="nf">channel</span><span class="p">.</span><span class="nf">queue</span><span class="p">(</span><span class="n">queue_name</span><span class="p">,</span>
+        <span class="no">Sneakers</span><span class="o">::</span><span class="no">CONFIG</span><span class="p">.</span><span class="nf">merge</span><span class="p">(</span><span class="n">opts</span><span class="p">)[</span><span class="ss">:queue_options</span><span class="p">])</span>
+      <span class="n">queue</span><span class="p">.</span><span class="nf">bind</span><span class="p">(</span><span class="n">delayed_publisher</span><span class="p">.</span><span class="nf">exchange</span><span class="p">,</span> <span class="ss">routing_key: </span><span class="n">queue_name</span><span class="p">)</span>
+      <span class="n">delayed_publisher</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></div>
+<p>In order to schedule a delayed job, I then just have to include this concern in
+the job class:</p>
+<div class="highlight"><pre class="highlight ruby"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">SomeJob</span> <span class="o">&lt;</span> <span class="no">ApplicationJob</span>
+  <span class="kp">include</span> <span class="no">PerformDelayed</span>
+  <span class="n">queue_as</span> <span class="ss">:default</span>
+
+  <span class="k">def</span> <span class="nf">perform</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="c1"># actually perform work</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></td></tr></tbody></table></code></pre></div>
+<p>I can now schedule delayed jobs with a given delay using the standard <code>wait:
+&lt;seconds&gt;</code> option:</p>
+<div class="highlight"><pre class="highlight ruby"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="no">SomeJob</span><span class="p">.</span><span class="nf">perform_later</span><span class="p">(</span><span class="n">some_argument</span><span class="p">,</span> <span class="ss">wait: </span><span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">)</span>
+</pre></td></tr></tbody></table></code></pre></div>
+<h2>Wrapping up</h2>
+
+<p>RabbitMQ is an excellent messaging queue system (although merit and demerit,
+when speaking about technologies, is
+<a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html">always contextual</a>,
+so be skeptical of anyone saying &ldquo;if you don&rsquo;t use X, you&rsquo;re doing it wrong&rdquo;).
+Sneakers offers a nice adapter to use RabbitMQ as a backend for <code>ActiveJob</code> in
+Ruby on Rails, but unfortunately it does not implement delayed jobs out of the
+box.</p>
+
+<p>Luckily, this feature is easy to implement, as shown in this post. With a little
+more effort, one can also implement support for the <code>wait_until: &lt;point in
+time&gt;</code> option, which is left as an excercise to the reader :)</p>
+
+    </article>
+
+    <aside class="tags">
+      <ul>
+          <li><a href="/blog/tags/activejob.html">activejob</a></li>
+          <li><a href="/blog/tags/jobs.html">jobs</a></li>
+          <li><a href="/blog/tags/rabbitmq.html">rabbitmq</a></li>
+          <li><a href="/blog/tags/rails.html">rails</a></li>
+          <li><a href="/blog/tags/sneakers.html">sneakers</a></li>
+          <li><a href="/blog/tags/delayed.html">delayed</a></li>
+          <li><a href="/blog/tags/ruby.html">ruby</a></li>
+          <li><a href="/blog/tags/programming.html">programming</a></li>
+      </ul>
+    </aside>
+
+
+    <footer>
+      <span><a href="/blog/feed.xml">RSS feed</a></span>
+      <span>&copy; Luca Ongaro</span>
+    </footer>
+  </body>
+</html>
+</main>
