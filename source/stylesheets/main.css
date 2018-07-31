@@ -9,7 +9,7 @@ html {
 }
 
 body {
-  background: rgba(252, 214, 103, 0.1);
+  background: rgba(252, 214, 103, 0.05);
   background-image: url(/images/noise.png);
   color: #000;
   padding: 0;
@@ -160,7 +160,7 @@ h1 small, h2 small {
   display: block;
 }
 
-p + h1, p + h2, p + h3 {
+p + h1, p + h2, p + h3, .highlight + h1, .highlight + h2, .highlight + h3 {
   margin-top: 1em;
 }
 
@@ -211,6 +211,17 @@ abbr {
   font-size: 1em;
   text-decoration: none;
   font-style: normal;
+}
+
+*:not(pre) > code {
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0 0.25em;
+  display: inline-block;
+  font-size: 0.889em;
+}
+
+pre, code {
+  font-family: 'Source Code Pro', 'Monaco', 'Menlo', monospace;
 }
 
 .profile {
