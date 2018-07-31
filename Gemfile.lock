@@ -109,12 +109,12 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  builder (~> 3.0)
+  builder (~> 3.2)
   middleman (~> 4.2)
-  middleman-blog (~> 4.0.2)
-  middleman-syntax (~> 3.0.0)
+  middleman-blog (~> 4.0)
+  middleman-syntax (~> 3.0)
   nokogiri (~> 1.8)
-  redcarpet (~> 3.3, >= 3.3.3)
+  redcarpet (~> 3.4)
   tzinfo-data
   wdm (~> 0.1)
 
