@@ -215,7 +215,7 @@ abbr {
   font-style: normal;
 }
 
-*:not(pre) > code {
+code {
   background: rgba(0, 0, 0, 0.1);
   padding: 0 0.25em;
   display: inline-block;
@@ -287,6 +287,7 @@ pre, code {
 .tags a {
   display: inline-block;
   padding: 0.5em;
+  margin-bottom: 0.25em;
   background: rgba(22, 82, 128, 0.2);
   transition: all 0.15s ease-in;
   border-radius: 3px;
