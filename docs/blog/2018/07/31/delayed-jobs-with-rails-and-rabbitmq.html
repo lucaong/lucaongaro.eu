@@ -40,9 +40,9 @@
       </figure>
 
       <p>I recently had the need to schedule background jobs with a specified delay into
-the future from a <em>Ruby on Rails</em> application. I had to implement a retry
-mechanism with exponential backoff, so I needed to be able to express something
-like &ldquo;execute job X, but wait Y seconds before doing so&rdquo;. Clearly, I needed this
+the future from a Ruby on Rails application. I had to implement a retry
+mechanism with backoff, so I needed to be able to express something like
+&ldquo;execute job X, but wait Y seconds before doing so&rdquo;. Clearly, I needed this
 mechanism to be non-blocking: if a job is scheduled 5 minutes in the future, the
 workers should be free to process other jobs in the meantime.</p>
 
@@ -52,11 +52,11 @@ which is exposed in the <code>ActiveJob</code> API as the <code>wait: &lt;second
 </pre></td><td class="rouge-code"><pre><span class="no">SomeJob</span><span class="p">.</span><span class="nf">perform_later</span><span class="p">(</span><span class="n">some_argument</span><span class="p">,</span> <span class="ss">wait: </span><span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">)</span>
 </pre></td></tr></tbody></table></code></pre></div>
 <p>My adapter of choice though is <a href="http://jondot.github.io/sneakers/">Sneakers</a>,
-which is based on the superb <a href="https://www.rabbitmq.com">RabbitMQ</a>, but
-unfortunately, as of July 2018, does not implement delayed jobs out of the box,
-as the feature table for <code>ActiveJob::QueueAdapters</code> dutyfully reports (copied
-from the
-<a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html">official docs</a>):</p>
+which is based on the superb <a href="https://www.rabbitmq.com">RabbitMQ</a>.
+Unfortunately, as of July 2018, the Sneakers adapter does not implement delayed
+jobs out of the box, as the feature table for <code>ActiveJob::QueueAdapters</code>
+dutyfully reports (copied from the <a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html">official
+docs</a>):</p>
 <div class="highlight"><pre class="highlight plaintext"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 3
@@ -106,8 +106,8 @@ just has to:</p>
 
 <ol>
 <li>Declare an exchange with type <code>x-delayed-message</code>, and an extra
- <code>x-delayed-type</code> header to indicate the desired routing semantic after the
- delay elapsed (like &ldquo;direct&rdquo;, or &ldquo;topic&rdquo;, etc.).</li>
+ <code>x-delayed-type</code> header to indicate the desired routing semantic to follow
+ after the delay elapses (like &ldquo;direct&rdquo;, or &ldquo;topic&rdquo;, etc.).</li>
 <li>Publish messages on that exchange, providing an <code>x-delay</code> header indicating
  the desired delay in milliseconds.</li>
 <li>Queues bound to the exchange will then receive the message after the given
@@ -241,15 +241,15 @@ the job class:</p>
   <span class="k">end</span>
 <span class="k">end</span>
 </pre></td></tr></tbody></table></code></pre></div>
-<p>I can now schedule delayed jobs with a given delay using the standard <code>wait:
-&lt;seconds&gt;</code> option:</p>
+<p>I can now schedule jobs with a given delay using the standard <code>wait: &lt;seconds&gt;</code>
+option:</p>
 <div class="highlight"><pre class="highlight ruby"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 </pre></td><td class="rouge-code"><pre><span class="no">SomeJob</span><span class="p">.</span><span class="nf">perform_later</span><span class="p">(</span><span class="n">some_argument</span><span class="p">,</span> <span class="ss">wait: </span><span class="mi">5</span><span class="p">.</span><span class="nf">minutes</span><span class="p">)</span>
 </pre></td></tr></tbody></table></code></pre></div>
 <h2>Wrapping up</h2>
 
-<p>RabbitMQ is an excellent messaging queue system (although merit and demerit,
-when speaking about technologies, is
+<p>RabbitMQ is an excellent messaging queue system (although merits and demerits,
+when speaking about technologies, are
 <a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html">always contextual</a>,
 so be skeptical of anyone saying &ldquo;if you don&rsquo;t use X, you&rsquo;re doing it wrong&rdquo;).
 Sneakers offers a nice adapter to use RabbitMQ as a backend for <code>ActiveJob</code> in

@@ -14,14 +14,14 @@
     <link rel="alternate" href="http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html"/>
     <id>http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html</id>
     <published>2018-07-31T15:34:00+02:00</published>
-    <updated>2018-07-31T21:54:23+02:00</updated>
+    <updated>2018-08-01T11:32:58+02:00</updated>
     <author>
       <name>Article Author</name>
     </author>
     <content type="html">&lt;p&gt;I recently had the need to schedule background jobs with a specified delay into
-the future from a &lt;em&gt;Ruby on Rails&lt;/em&gt; application. I had to implement a retry
-mechanism with exponential backoff, so I needed to be able to express something
-like &amp;ldquo;execute job X, but wait Y seconds before doing so&amp;rdquo;. Clearly, I needed this
+the future from a Ruby on Rails application. I had to implement a retry
+mechanism with backoff, so I needed to be able to express something like
+&amp;ldquo;execute job X, but wait Y seconds before doing so&amp;rdquo;. Clearly, I needed this
 mechanism to be non-blocking: if a job is scheduled 5 minutes in the future, the
 workers should be free to process other jobs in the meantime.&lt;/p&gt;
 
@@ -31,11 +31,11 @@ which is exposed in the &lt;code&gt;ActiveJob&lt;/code&gt; API as the &lt;code&g
 &lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="no"&gt;SomeJob&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform_later&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_argument&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;wait: &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;p&gt;My adapter of choice though is &lt;a href="http://jondot.github.io/sneakers/"&gt;Sneakers&lt;/a&gt;,
-which is based on the superb &lt;a href="https://www.rabbitmq.com"&gt;RabbitMQ&lt;/a&gt;, but
-unfortunately, as of July 2018, does not implement delayed jobs out of the box,
-as the feature table for &lt;code&gt;ActiveJob::QueueAdapters&lt;/code&gt; dutyfully reports (copied
-from the
-&lt;a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html"&gt;official docs&lt;/a&gt;):&lt;/p&gt;
+which is based on the superb &lt;a href="https://www.rabbitmq.com"&gt;RabbitMQ&lt;/a&gt;.
+Unfortunately, as of July 2018, the Sneakers adapter does not implement delayed
+jobs out of the box, as the feature table for &lt;code&gt;ActiveJob::QueueAdapters&lt;/code&gt;
+dutyfully reports (copied from the &lt;a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html"&gt;official
+docs&lt;/a&gt;):&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
 2
 3
@@ -85,8 +85,8 @@ just has to:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;Declare an exchange with type &lt;code&gt;x-delayed-message&lt;/code&gt;, and an extra
- &lt;code&gt;x-delayed-type&lt;/code&gt; header to indicate the desired routing semantic after the
- delay elapsed (like &amp;ldquo;direct&amp;rdquo;, or &amp;ldquo;topic&amp;rdquo;, etc.).&lt;/li&gt;
+ &lt;code&gt;x-delayed-type&lt;/code&gt; header to indicate the desired routing semantic to follow
+ after the delay elapses (like &amp;ldquo;direct&amp;rdquo;, or &amp;ldquo;topic&amp;rdquo;, etc.).&lt;/li&gt;
 &lt;li&gt;Publish messages on that exchange, providing an &lt;code&gt;x-delay&lt;/code&gt; header indicating
  the desired delay in milliseconds.&lt;/li&gt;
 &lt;li&gt;Queues bound to the exchange will then receive the message after the given
@@ -220,15 +220,15 @@ the job class:&lt;/p&gt;
   &lt;span class="k"&gt;end&lt;/span&gt;
 &lt;span class="k"&gt;end&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-&lt;p&gt;I can now schedule delayed jobs with a given delay using the standard &lt;code&gt;wait:
-&amp;lt;seconds&amp;gt;&lt;/code&gt; option:&lt;/p&gt;
+&lt;p&gt;I can now schedule jobs with a given delay using the standard &lt;code&gt;wait: &amp;lt;seconds&amp;gt;&lt;/code&gt;
+option:&lt;/p&gt;
 &lt;div class="highlight"&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
 &lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="no"&gt;SomeJob&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;perform_later&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_argument&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;wait: &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
 &lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 &lt;h2&gt;Wrapping up&lt;/h2&gt;
 
-&lt;p&gt;RabbitMQ is an excellent messaging queue system (although merit and demerit,
-when speaking about technologies, is
+&lt;p&gt;RabbitMQ is an excellent messaging queue system (although merits and demerits,
+when speaking about technologies, are
 &lt;a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html"&gt;always contextual&lt;/a&gt;,
 so be skeptical of anyone saying &amp;ldquo;if you don&amp;rsquo;t use X, you&amp;rsquo;re doing it wrong&amp;rdquo;).
 Sneakers offers a nice adapter to use RabbitMQ as a backend for &lt;code&gt;ActiveJob&lt;/code&gt; in
