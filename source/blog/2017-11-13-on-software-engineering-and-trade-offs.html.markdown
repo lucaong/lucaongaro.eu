@@ -25,14 +25,14 @@ technical decision, each strenuously defending their own view of the
 (programming) World.
 
 While there is nothing wrong in recognizing the merits of a technique and in
-adopting it, we should never forget one fundamental point: pretty much every
+adopting it, we should never forget one fundamental point: _pretty much every
 technical discipline or tool embodies a trade-off. Techniques and technologies
 are solutions to specific problems, and their merits or flaws are never
-absolute, but always bound to the context. Being aware of where these trade-offs
-lie is necessary not only to operate the right choices of tech, but also to
-maintain an open and flexible mind, capable of changing approach when necessary.
-Moreover, knowing where costs and benefits lie, provide us with the opportunity
-to innovate in ways that shift the trade-offs in a better direction.
+absolute, but always bound to the context._ Being aware of where these
+trade-offs lie is necessary not only to operate the right choices of tech, but
+also to maintain an open and flexible mind, capable of changing approach when
+necessary. Moreover, knowing where costs and benefits lie, provide us with the
+opportunity to innovate in ways that shift the trade-offs in a better direction.
 
 ## Static vs. Dynamic Typing
 
