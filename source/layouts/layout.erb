@@ -1,18 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-772585-1"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'UA-772585-1');
-    </script>
-
     <title>Luca Ongaro<%= ' - ' + current_article.title unless current_article.nil? %></title>
+
     <%= stylesheet_link_tag 'main' %>
     <% unless current_article.nil? %>
       <%= stylesheet_link_tag 'highlighting' %>
@@ -21,6 +11,24 @@
     <%= feed_tag :atom, "#{blog.options.prefix.to_s}/feed.xml", title: "Atom Feed" %>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/cookieconsent.min.css" />
+    <script src="/javascripts/cookieconsent.min.js"></script>
+    <script src="/javascripts/gaConsent.js"></script>
+    <script>
+      gaConsentNotice('UA-772585-1')
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-772585-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-772585-1', { 'anonymize_ip': true });
+    </script>
+
   </head>
   <body>
     <header>
