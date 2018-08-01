@@ -246,8 +246,12 @@ impasse.</p>
 
 
     <footer>
-      <span><a href="/blog/feed.xml">RSS feed</a></span>
       <span>&copy; Luca Ongaro</span>
+      <span><a href="/blog/feed.xml">RSS feed</a></span>
+      <span>
+        <a href="#" class="cookie-prefs">Privacy settings</a>
+        <script>document.querySelector('.cookie-prefs').addEventListener('click', gaConsentNotice.retrigger)</script>
+      </span>
     </footer>
 
     <script type="text/javascript">
