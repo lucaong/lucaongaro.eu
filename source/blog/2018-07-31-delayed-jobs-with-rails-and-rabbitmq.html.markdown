@@ -7,9 +7,9 @@ tags: activejob, jobs, rabbitmq, rails, sneakers, delayed, ruby, programming
 ---
 
 I recently had the need to schedule background jobs with a specified delay into
-the future from a _Ruby on Rails_ application. I had to implement a retry
-mechanism with exponential backoff, so I needed to be able to express something
-like "execute job X, but wait Y seconds before doing so". Clearly, I needed this
+the future from a Ruby on Rails application. I had to implement a retry
+mechanism with backoff, so I needed to be able to express something like
+"execute job X, but wait Y seconds before doing so". Clearly, I needed this
 mechanism to be non-blocking: if a job is scheduled 5 minutes in the future, the
 workers should be free to process other jobs in the meantime.
 
@@ -21,11 +21,11 @@ SomeJob.perform_later(some_argument, wait: 5.minutes)
 ```
 
 My adapter of choice though is [Sneakers](http://jondot.github.io/sneakers/),
-which is based on the superb [RabbitMQ](https://www.rabbitmq.com), but
-unfortunately, as of July 2018, does not implement delayed jobs out of the box,
-as the feature table for `ActiveJob::QueueAdapters` dutyfully reports (copied
-from the
-[official docs](https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html)):
+which is based on the superb [RabbitMQ](https://www.rabbitmq.com).
+Unfortunately, as of July 2018, the Sneakers adapter does not implement delayed
+jobs out of the box, as the feature table for `ActiveJob::QueueAdapters`
+dutyfully reports (copied from the [official
+docs](https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html)):
 
 ```text
 |                   | Async | Queues | Delayed    | Priorities | Timeout | Retries |
@@ -64,8 +64,8 @@ familiar with RabbitMQ and AMQP. In order to schedule delayed messages, one
 just has to:
 
   1. Declare an exchange with type `x-delayed-message`, and an extra
-     `x-delayed-type` header to indicate the desired routing semantic after the
-     delay elapsed (like "direct", or "topic", etc.).
+     `x-delayed-type` header to indicate the desired routing semantic to follow
+     after the delay elapses (like "direct", or "topic", etc.).
   2. Publish messages on that exchange, providing an `x-delay` header indicating
      the desired delay in milliseconds.
   3. Queues bound to the exchange will then receive the message after the given
@@ -147,8 +147,8 @@ class SomeJob < ApplicationJob
 end
 ```
 
-I can now schedule delayed jobs with a given delay using the standard `wait:
-<seconds>` option:
+I can now schedule jobs with a given delay using the standard `wait: <seconds>`
+option:
 
 ```ruby
 SomeJob.perform_later(some_argument, wait: 5.minutes)
@@ -156,8 +156,8 @@ SomeJob.perform_later(some_argument, wait: 5.minutes)
 
 ## Wrapping up
 
-RabbitMQ is an excellent messaging queue system (although merit and demerit,
-when speaking about technologies, is
+RabbitMQ is an excellent messaging queue system (although merits and demerits,
+when speaking about technologies, are
 [always contextual](/blog/2017/11/13/on-software-engineering-and-trade-offs.html),
 so be skeptical of anyone saying "if you don't use X, you're doing it wrong").
 Sneakers offers a nice adapter to use RabbitMQ as a backend for `ActiveJob` in
