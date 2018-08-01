@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-772585-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-772585-1');
+    </script>
+
     <title>Luca Ongaro<%= ' - ' + current_article.title unless current_article.nil? %></title>
     <%= stylesheet_link_tag 'main' %>
     <% unless current_article.nil? %>
