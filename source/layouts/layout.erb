@@ -47,8 +47,12 @@
     <%= yield %>
 
     <footer>
-      <span><%= link_to 'RSS feed', '/blog/feed.xml' %></span>
       <span>&copy; Luca Ongaro</span>
+      <span><%= link_to 'RSS feed', '/blog/feed.xml' %></span>
+      <span>
+        <a href="#" class="cookie-prefs">Privacy settings</a>
+        <script>document.querySelector('.cookie-prefs').addEventListener('click', gaConsentNotice.retrigger)</script>
+      </span>
     </footer>
 
     <script type="text/javascript">

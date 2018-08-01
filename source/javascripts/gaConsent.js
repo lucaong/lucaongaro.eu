@@ -23,7 +23,7 @@ var gaConsentNotice = function (GA_TRACKING_ID) {
       },
       "theme": "classic",
       "showLink": false,
-      "revokeBtn": "<span></span>",
+      "revokeBtn": "<span class='cc-revoke'></span>",
       "type": "opt-out",
       "content": {
         "message": "This website uses Google Analytics to collect anonymous page view information.",
@@ -64,4 +64,9 @@ var gaConsentNotice = function (GA_TRACKING_ID) {
       }
     })
   })
+}
+
+gaConsentNotice.retrigger = function (event) {
+  if (event && event.preventDefault) { event.preventDefault() }
+  document.querySelector('.cc-revoke').click()
 }
