@@ -245,7 +245,7 @@ time&amp;gt;&lt;/code&gt; option, which is left as an excercise to the reader :)
     <link rel="alternate" href="http://blog.url.com/blog/2017/11/13/on-software-engineering-and-trade-offs.html"/>
     <id>http://blog.url.com/blog/2017/11/13/on-software-engineering-and-trade-offs.html</id>
     <published>2017-11-13T14:36:00+01:00</published>
-    <updated>2018-07-29T16:37:55+02:00</updated>
+    <updated>2018-08-01T12:47:43+02:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -268,14 +268,14 @@ technical decision, each strenuously defending their own view of the
 (programming) World.&lt;/p&gt;
 
 &lt;p&gt;While there is nothing wrong in recognizing the merits of a technique and in
-adopting it, we should never forget one fundamental point: pretty much every
+adopting it, we should never forget one fundamental point: &lt;em&gt;pretty much every
 technical discipline or tool embodies a trade-off. Techniques and technologies
 are solutions to specific problems, and their merits or flaws are never
-absolute, but always bound to the context. Being aware of where these trade-offs
-lie is necessary not only to operate the right choices of tech, but also to
-maintain an open and flexible mind, capable of changing approach when necessary.
-Moreover, knowing where costs and benefits lie, provide us with the opportunity
-to innovate in ways that shift the trade-offs in a better direction.&lt;/p&gt;
+absolute, but always bound to the context.&lt;/em&gt; Being aware of where these
+trade-offs lie is necessary not only to operate the right choices of tech, but
+also to maintain an open and flexible mind, capable of changing approach when
+necessary. Moreover, knowing where costs and benefits lie, provide us with the
+opportunity to innovate in ways that shift the trade-offs in a better direction.&lt;/p&gt;
 
 &lt;h2&gt;Static vs. Dynamic Typing&lt;/h2&gt;
 
