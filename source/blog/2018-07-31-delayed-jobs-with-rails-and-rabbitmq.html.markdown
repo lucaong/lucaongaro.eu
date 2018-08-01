@@ -101,7 +101,9 @@ module PerformDelayed
         routing_key: job.queue_name)
 
       # Log in the usual ActiveJob format, to make debugging easier
-      Rails.logger.info("[ActiveJob] #{self.name} (Job ID: #{job.job_id}) to PerformDelayed(#{job.queue_name}) with arguments: #{args.map(&:inspect).join(', ')}, #{opts.inspect}")
+      Rails.logger.info("[ActiveJob] #{self.name} (Job ID: #{job.job_id}) to "
+        + "PerformDelayed(#{job.queue_name}) with arguments: "
+        + "#{args.map(&:inspect).join(', ')}, #{opts.inspect}")
     end
 
     def delayed_publisher
