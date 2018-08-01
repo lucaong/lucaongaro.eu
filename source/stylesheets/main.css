@@ -272,6 +272,9 @@ em {
   margin: 0 0 1.5rem 0;
   padding: 0;
 }
+.latest-posts li {
+  margin-bottom: 1em;
+}
 .latest-posts .read-more {
   display: block;
   margin-top: -0.5em;
