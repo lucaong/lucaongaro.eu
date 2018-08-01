@@ -2,11 +2,30 @@
 <html lang="en-US">
   <head>
     <title>Luca Ongaro</title>
+
     <link href="/stylesheets/main.css" rel="stylesheet" />
     <link href="https://fonts.googleapis.com/css?family=Open+Sans|Martel|Source+Code+Pro" rel="stylesheet">
     <link rel="alternate" type="application/atom+xml" title="Atom Feed" href="/blog/feed.xml" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8">
+
+    <link rel="stylesheet" type="text/css" href="/stylesheets/cookieconsent.min.css" />
+    <script src="/javascripts/cookieconsent.min.js"></script>
+    <script src="/javascripts/gaConsent.js"></script>
+    <script>
+      gaConsentNotice('UA-772585-1')
+    </script>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-772585-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-772585-1', { 'anonymize_ip': true });
+    </script>
+
   </head>
   <body>
     <header>
@@ -35,20 +54,22 @@
   <article>
 
     <ol class="latest-posts">
-      <li>
+        <li>
           <h2><a href="/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html">Delayed jobs with Rails and RabbitMQ</a> <small>Jul 31, 2018</small></h2>
           <p>I recently had the need to schedule background jobs with a specified delay into
 the future from a Ruby on Rails application. I had to implement a retry
 mechanism with backoff, so I needed to be able to express something like
 “execute job X, but wait Y seconds before doing so”. Clearly, I needed this…</p>
           <span class="read-more"><a href="/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html">read full post</a></span>
+        </li>
+        <li>
           <h2><a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html">On Engineering Software and Trade-Offs</a> <small>Nov 13, 2017</small></h2>
           <p>As software developers, we tend to be quite opinionated about our tools and
 techniques. Our own specific education and experiences shape our preferences,
 and we often identify with several schools of thought. We might be, for example,
 advocates of functional programming, practitioners of test driven…</p>
           <span class="read-more"><a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html">read full post</a></span>
-      </li>
+        </li>
     </ol>
   </article>
 
