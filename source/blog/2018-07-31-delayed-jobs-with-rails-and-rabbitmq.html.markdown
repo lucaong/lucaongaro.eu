@@ -17,7 +17,7 @@ Some popular `ActiveJob` adapters like Resque or Sidekiq implement this feature,
 which is exposed in the `ActiveJob` API as the `wait: <seconds>` option:
 
 ```ruby
-SomeJob.perform_later(some_argument, wait: 5.minutes)
+SomeJob.set(wait: 5.minutes).perform_later(some_argument)
 ```
 
 My adapter of choice though is [Sneakers](http://jondot.github.io/sneakers/),
@@ -72,88 +72,82 @@ just has to:
      delay elapses, and from this point on everything works according to the
      standard AMQP protocol.
 
-What was missing was only the integration between this plugin and our
-Rails + ActiveJob + Sneakers setup. Essentially, I needed to publish jobs that
-specify a `wait: <seconds>` option using a custom publisher that uses a
-`x-delayed-message` exchange and sets the `x-delay` header, while leaving jobs
-that do not specify a delay to the standard Sneakers publisher.
+What was missing was only the integration between this plugin and our Rails +
+ActiveJob + Sneakers setup. Essentially, I needed to publish jobs that specify a
+delay on a `x-delayed-message` exchange, setting the `x-delay` header. Also, it
+was necessary to make sure that the delayed exchange actually exists, and that
+the queue on which we want to route the job is bound to it.
 
-Here's the code I ended up writing, using `ActiveSupport::Concern` to make it
-easily pluggable to an existing `ActiveJob` class:
+Here's the code that I ended up writing. It re-defines the `enqueue_at` method
+on the `SneakersAdapter` (the original implementation just raises a
+`NotImplementedError`, so augmenting the original class is a reasonable option
+here):
 
 ```ruby
 require 'sneakers'
 
-module PerformDelayed
-  extend ActiveSupport::Concern
+module Sneakers
+  module DelayedJobSupport
+    def enqueue_at(job, timestamp)
+      delay = timestamp - Time.current.to_f
+      # Just enqueue job if delay is zero or negative
+      return enqueue(job) if delay < 0
 
-  class_methods do
-    def perform_later(*args, opts)
-      # If a job does not specify `:wait`, just process it normally
-      return super unless opts.is_a?(Hash) && opts[:wait]
+      # Ensure queue is bound to the delayed message exchange
+      self.class.ensure_delayed_exchange_bound(job.queue_name)
 
-      # Otherwise, publish it on the delayed message exchange setting the
-      # `x-delay` header
-      job = new(*args, opts.without(:wait))
-      delayed_publisher.publish(
+      # Publish on the delayed message exchange
+      self.class.delayed_publisher.publish(
         ActiveSupport::JSON.encode(job.serialize),
-        headers: { 'x-delay' => opts[:wait].to_i * 1000 },
+        headers: { 'x-delay' => (delay.to_f * 1000).to_i },
         routing_key: job.queue_name)
-
-      # Log in the usual ActiveJob format, to make debugging easier
-      Rails.logger.info("[ActiveJob] #{self.name} (Job ID: #{job.job_id}) to "
-        + "PerformDelayed(#{job.queue_name}) with arguments: "
-        + "#{args.map(&:inspect).join(', ')}, #{opts.inspect}")
     end
 
-    def delayed_publisher
-      # Cache the publisher at the class level, so that all job instances of
-      # the including class will reuse the same
-      @delayed_publisher ||= create_delayed_publisher!
-    end
+    module ClassMethods
+      def delayed_publisher
+        @delayed_publisher ||= Sneakers::Publisher.new({
+          exchange: 'delayed.exchange',
+          exchange_options: {
+            type: 'x-delayed-message',
+            arguments: { 'x-delayed-type' => 'direct' },
+            durable: true,
+            auto_delete: false
+          }
+        })
+      end
 
-    private def create_delayed_publisher!
-      # Idempotently create the delayed message exchange and the queue, then
-      # create a publisher for them
-      opts = {
-        exchange: 'delayed.exchange',
-        exchange_options: {
-          type: 'x-delayed-message',
-          arguments: { 'x-delayed-type' => 'direct' },
-          durable: true,
-          auto_delete: false
-        }
-      }
-      delayed_publisher = Sneakers::Publisher.new(opts)
-      delayed_publisher.ensure_connection!
-      queue = delayed_publisher.channel.queue(queue_name,
-        Sneakers::CONFIG.merge(opts)[:queue_options])
-      queue.bind(delayed_publisher.exchange, routing_key: queue_name)
-      delayed_publisher
+      # The first time a queue receives a delayed job, make sure
+      # that the queue is bound to the delayed message exchange
+      def ensure_delayed_exchange_bound(queue_name)
+        @bound_to_delayed_exchange ||= {}
+        return nil if @bound_to_delayed_exchange[queue_name].present?
+        delayed_publisher.ensure_connection!
+        queue = delayed_publisher.channel.queue(queue_name, Sneakers::CONFIG[:queue_options])
+        queue.bind(delayed_publisher.exchange, routing_key: queue_name)
+        @bound_to_delayed_exchange[queue_name] = true
+      end
     end
   end
 end
-```
 
-In order to schedule a delayed job, I then just have to include this concern in
-the job class:
-
-```ruby
-class SomeJob < ApplicationJob
-  include PerformDelayed
-  queue_as :default
-
-  def perform(*args)
-    # actually perform work
+module ActiveJob
+  module QueueAdapters
+    class SneakersAdapter
+      # Add support for delayed jobs to SneakersAdapter
+      extend Sneakers::DelayedJobSupport::ClassMethods
+      prepend Sneakers::DelayedJobSupport
+    end
   end
 end
 ```
 
 I can now schedule jobs with a given delay using the standard `wait: <seconds>`
-option:
+or `wait_until: <timestamp>` options:
 
 ```ruby
-SomeJob.perform_later(some_argument, wait: 5.minutes)
+SomeJob.set(wait: 5.minutes).perform_later(some_argument)
+
+SomeJob.set(wait_until: 10.minutes.from_now).perform_later(some_argument)
 ```
 
 ## Wrapping up
@@ -162,10 +156,9 @@ RabbitMQ is an excellent messaging queue system (although merits and demerits,
 when speaking about technologies, are
 [always contextual](/blog/2017/11/13/on-software-engineering-and-trade-offs.html),
 so be skeptical of anyone saying "if you don't use X, you're doing it wrong").
-Sneakers offers a nice adapter to use RabbitMQ as a backend for `ActiveJob` in
-Ruby on Rails, but unfortunately it does not implement delayed jobs out of the
+Sneakers offers a nice adapter to use RabbitMQ as an `ActiveJob` backend in
+Ruby on Rails. Unfortunately, it does not implement delayed jobs out of the
 box.
 
-Luckily, this feature is easy to implement, as shown in this post. With a little
-more effort, one can also implement support for the `wait_until: <point in
-time>` option, which is left as an excercise to the reader :)
+Luckily, with the help of a nice semi-official plugin, this feature is easy to
+implement, as shown in this post.
