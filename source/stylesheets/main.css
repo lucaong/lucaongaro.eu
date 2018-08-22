@@ -126,12 +126,10 @@ article, figure, p {
 
 article > p:first-of-type:first-letter {
   float: left;
-  font-size: 5em;
+  font-size: 4.8em;
   line-height: 0.6em;
-  padding: 0.2em 0.15em 0 0;
+  margin: 0.29em 0.15em 0 0;
   color: #135280;
-  -webkit-initial-letter: 3;
-  initial-letter: 3;
 }
 
 h1, h2, h3, h4, h5, h6 {
