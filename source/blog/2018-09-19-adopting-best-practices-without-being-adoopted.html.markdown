@@ -33,15 +33,15 @@ other developers about code we need to collaborate on, pointing out, for
 example, how one class implements a "visitor pattern" in order to solve a
 problem. In this sense, knowing and studying design patterns is useful.
 
-On the other hand, patterns are NOT a benchmark to measure how good code is, and
-also not a menu of the good ways to solve problems with software. First, they
-are obviously not an exhaustive list of all the possible valid ways to structure
-code. The original "Gang of Four" classic book lists 23 design patterns, but
-good design is clearly not about picking the right option out of these 23.
-Also, those patterns are heavily focused on Object Oriented design, which is
-just one possible programming discipline: in other contexts, like functional
-programming, most of those patterns do not have much meaning, while different
-patterns emerge.
+On the other hand, patterns are NOT a benchmark to measure how good some code
+is, and also not a menu of the proper ways to solve problems with software.
+First, they are obviously not an exhaustive list of all the possible valid ways
+to structure code. The original "Gang of Four" classic book lists 23 design
+patterns, but good design is clearly not about picking the right option out of
+these 23. Also, those patterns are heavily focused on Object Oriented design,
+which is just one possible programming discipline: in other contexts, like
+functional programming, most of those patterns do not have much meaning, while
+different patterns emerge.
 
 Thinking in terms of patterns when designing code might even be limiting: it's
 easy to end up "shoehorning" a solution into a pattern, and failing to recognize
@@ -107,7 +107,8 @@ against a checklist. Moreover, communities are formed around practices, with the
 goal of promoting their adoption. Those communities tend to protect their
 identity from change, sometime forgetting the original motivation for the
 practice. That way, even genuinely good practices can get stretched outside
-their boundaries and become akin to cults.
+their boundaries and become akin to cults. The antidote is to always demand to
+know _why_ something is better, without accepting tautological answers.
 
 Our aim should be to master our art more and more every day, and for that we
 need our critical thinking well sharpened. The satisfaction and peace of mind
