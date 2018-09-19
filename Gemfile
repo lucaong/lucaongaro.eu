@@ -9,9 +9,9 @@ gem 'wdm', '~> 0.1', platforms: [:mswin, :mingw]
 gem 'tzinfo-data', platforms: [:mswin, :mingw, :jruby]
 
 # Middleman Gems
-gem "middleman", "~> 4.2"
-gem "middleman-blog", "~> 4.0"
-gem "middleman-syntax", "~> 3.0"
+gem 'middleman', '~> 4.2'
+gem 'middleman-blog', '~> 4.0'
+gem 'middleman-syntax', '~> 3.0'
 
 gem 'redcarpet', '~> 3.4'
 
