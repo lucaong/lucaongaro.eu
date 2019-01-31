@@ -126,9 +126,9 @@ article, figure, p {
 
 article > p:first-of-type:first-letter {
   float: left;
-  font-size: 4.8em;
-  line-height: 0.6em;
-  margin: 0.29em 0.15em 0 0;
+  font-size: 3.1em;
+  line-height: 0.4em;
+  margin: 0.39em 0.15em 0 0;
   color: #135280;
 }
 
@@ -227,6 +227,11 @@ pre, code {
 
 em {
   font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+  color: #000;
 }
 
 .profile {
@@ -358,6 +363,12 @@ em {
   article {
     max-width: 35rem;
     margin: 0 auto 1rem auto;
+  }
+
+  article > p:first-of-type:first-letter {
+    font-size: 4.8em;
+    line-height: 0.6em;
+    margin: 0.29em 0.15em 0 0;
   }
 
   p {
