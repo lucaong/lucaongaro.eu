@@ -68,9 +68,6 @@ As can be tested in the demo, the **~5000 songs** are indexed client-side upon
 each page load in a fraction of a second, and the search happens in **real
 time** as the user types, with no detectable latency.
 
-In the following part of this blog post, I will tell a bit more about the
-background story behing this library, and the specifics of its implementation.
-
 
 ## What's the point of a client-side search engine?
 
@@ -85,7 +82,7 @@ results should appear first).
 
 Normally, for such use cases, a search engine like **Solr** or **ElasticSearch**
 would be the obvious choice. The challenge though, was to make the search
-feature extremely fast, and as robust as possible to spotty Internet connections
+feature as fast as possible, but also resilient to spotty Internet connections
 on users' smartphones. I started to think whether it would make sense to
 implement the search index **client-side instead of server-side**: it might
 sound a bit unorthodox, but if possible at all, it would have given us several
@@ -112,7 +109,7 @@ results than a crude search with a regular expression.
 
 On the other hand, is it really possible to efficiently index and store
 thousands of documents in the browser memory? As it turns out, if the index is
-implemented in a space-efficient way, and the documents to store are not too
+implemented in a space efficient way, and the documents to store are not too
 large, **the answer is yes**. As a rough calculation, if we have 5000 documents
 to search amongst, and each document is on average 200 characters long (maybe we
 are only iterested in searching by title, or within a small description), then
