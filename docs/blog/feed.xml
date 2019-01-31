@@ -14,7 +14,7 @@
     <link rel="alternate" href="http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-01-31T18:04:08+01:00</updated>
+    <updated>2019-01-31T18:16:49+01:00</updated>
     <author>
       <name>Article Author</name>
     </author>
@@ -114,9 +114,6 @@ border-radius: 5px; width: 100%; height: 440px; margin: 1em 0;'&gt;&lt;/iframe&g
 each page load in a fraction of a second, and the search happens in &lt;strong&gt;real
 time&lt;/strong&gt; as the user types, with no detectable latency.&lt;/p&gt;
 
-&lt;p&gt;In the following part of this blog post, I will tell a bit more about the
-background story behing this library, and the specifics of its implementation.&lt;/p&gt;
-
 &lt;h2&gt;What&amp;rsquo;s the point of a client-side search engine?&lt;/h2&gt;
 
 &lt;p&gt;Recently, for a web application I was working on, I needed to allow users to
@@ -130,7 +127,7 @@ results should appear first).&lt;/p&gt;
 
 &lt;p&gt;Normally, for such use cases, a search engine like &lt;strong&gt;Solr&lt;/strong&gt; or &lt;strong&gt;ElasticSearch&lt;/strong&gt;
 would be the obvious choice. The challenge though, was to make the search
-feature extremely fast, and as robust as possible to spotty Internet connections
+feature as fast as possible, but also resilient to spotty Internet connections
 on users&amp;rsquo; smartphones. I started to think whether it would make sense to
 implement the search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might
 sound a bit unorthodox, but if possible at all, it would have given us several
@@ -157,7 +154,7 @@ results than a crude search with a regular expression.&lt;/p&gt;
 
 &lt;p&gt;On the other hand, is it really possible to efficiently index and store
 thousands of documents in the browser memory? As it turns out, if the index is
-implemented in a space-efficient way, and the documents to store are not too
+implemented in a space efficient way, and the documents to store are not too
 large, &lt;strong&gt;the answer is yes&lt;/strong&gt;. As a rough calculation, if we have 5000 documents
 to search amongst, and each document is on average 200 characters long (maybe we
 are only iterested in searching by title, or within a small description), then
