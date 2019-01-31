@@ -72,7 +72,7 @@ In the following part of this blog post, I will tell a bit more about the
 background story behing this library, and the specifics of its implementation.
 
 
-## Why would I ever implement a search engine client-side
+## What's the point of a client-side search engine?
 
 Recently, for a web application I was working on, I needed to allow users to
 search for products in the inventory of several resellers. Each of these
