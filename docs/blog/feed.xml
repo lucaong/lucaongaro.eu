@@ -5,10 +5,301 @@
   <id>http://blog.url.com/blog</id>
   <link href="http://blog.url.com/blog"/>
   <link href="http://blog.url.com/blog/feed.xml" rel="self"/>
-  <updated>2018-09-19T16:03:00+02:00</updated>
+  <updated>2019-01-30T16:08:00+01:00</updated>
   <author>
     <name>Blog Author</name>
   </author>
+  <entry>
+    <title>MiniSearch, a client-side fulltext search engine</title>
+    <link rel="alternate" href="http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
+    <id>http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
+    <published>2019-01-30T16:08:00+01:00</published>
+    <updated>2019-01-31T17:37:49+01:00</updated>
+    <author>
+      <name>Article Author</name>
+    </author>
+    <content type="html">&lt;p&gt;This blog post is to introduce
+&lt;a href="https://github.com/lucaong/minisearch"&gt;MiniSearch&lt;/a&gt;, a JavaScript library that
+provides &lt;strong&gt;client-side fulltext search&lt;/strong&gt; capabilities. It has zero runtime
+dependencies, and uses a space optimized index to support memory constrained
+environments like mobile browsers. It offers &lt;strong&gt;prefix search&lt;/strong&gt;, &lt;strong&gt;fuzzy match&lt;/strong&gt;,
+&lt;strong&gt;boosting&lt;/strong&gt;, &lt;strong&gt;auto suggestions&lt;/strong&gt;, and many of the features expected from a
+server-side search engine like Solr or Elastic Search.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is designed to be flexible and easy to use, and I think that a
+quick example can introduce it better than a long explanation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="c1"&gt;// A collection of documents we want to search&lt;/span&gt;
+&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;documents&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Moby Dick'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Call me Ishmael. Some years ago...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Zen and the Art of Motorcycle Maintenance'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'I can see by my watch...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Neuromancer'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'The sky above the port was...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Zen and the Art of Archery'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'At first sight it must seem...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="c1"&gt;// ...and more&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Create the search engine, and set `title` and `text` as searchable fields&lt;/span&gt;
+&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nx"&gt;miniSearch&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;MiniSearch&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt; &lt;span class="na"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Index all documents (this is fast!)&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;addAll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;documents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Search with default options. It will return the id of the matching documents,&lt;/span&gt;
+&lt;span class="c1"&gt;// along with a relevance score and match information&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen art motorcycle'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;// =&amp;gt; [ { id: 2, score: 2.77258, match: { ... } }, { id: 4, score: 1.38629, match: { ... } } ]&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Search only within specific fields&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Boost some fields to give them more importance (here "title")&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;boost&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Prefix search (so that 'moto' will match 'motorcycle')&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'moto'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Fuzzy search, in this example, with a max edit distance of 0.2 * term length.&lt;/span&gt;
+&lt;span class="c1"&gt;// The mispelled 'ismael' will match 'ishmael'.&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'ismael'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;fuzzy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.2&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Get suggestions for a partial search&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;autoSuggest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen ar'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;// =&amp;gt; [ { suggestion: 'zen archery art', terms: [ 'zen', 'archery', 'art' ], score: 1.73332 },&lt;/span&gt;
+&lt;span class="c1"&gt;//      { suggestion: 'zen art', terms: [ 'zen', 'art' ], score: 1.21313 } ]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;To see it in action, here is a small demo application to play with, and
+to experiment with different options:&lt;/p&gt;
+
+&lt;iframe src='https://lucaong.github.io/minisearch/examples/'
+style='border: none; background: #fafafa; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+border-radius: 5px; width: 100%; height: 440px; margin: 1em 0;'&gt;&lt;/iframe&gt;
+
+&lt;p&gt;As you can test in the demo, the &lt;strong&gt;~5000 songs&lt;/strong&gt; are indexed client-side upon
+each page load in a fraction of a second, and the search happens in &lt;strong&gt;real
+time&lt;/strong&gt; as the user types, with no detectable latency.&lt;/p&gt;
+
+&lt;p&gt;In the following part of this blog post, I would like to tell a bit more about
+the background story behing this library, and the specifics of its
+implementation.&lt;/p&gt;
+
+&lt;h2&gt;Why would I ever implement a search engine client-side&lt;/h2&gt;
+
+&lt;p&gt;Recently, for a web application I was working, I needed to allow users to search
+for products in the inventory of several resellers. Each of these resellers
+typically offers a few thousands of products. The app needed to offer advanced
+fulltext features like &lt;strong&gt;fuzzy match&lt;/strong&gt; (finding results also when a term does
+not match exactly, for example due to a mispell), &lt;strong&gt;prefix search&lt;/strong&gt; (searching
+for the initial part of a term should already yield results before the whole
+word is typed in), and proper &lt;strong&gt;ranking of results&lt;/strong&gt; (more relevant results
+should appear first).&lt;/p&gt;
+
+&lt;p&gt;Normally, for such use cases, a search engine like &lt;strong&gt;Solr&lt;/strong&gt; or &lt;strong&gt;ElasticSearch&lt;/strong&gt;
+would be the obvious choice. The challenge though, was to make the search
+feature extremely fast, and as robust as possible to spotty Internet connections
+on users&amp;rsquo; smartphones. I started to think whether it would make sense to
+implement the search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might
+sound a bit unorthodox, but if possible at all, it would have given us several
+advantages.&lt;/p&gt;
+
+&lt;p&gt;First, once the index is loaded, a temporary interruption of the Internet
+connectivity would not affect the search experience: if the search index lives
+on the client side, &lt;strong&gt;no network request is necessary&lt;/strong&gt;. Moreover, there would
+be no need to setup and run a search server, making the architecture simpler.
+Running the search engine client-side is also &lt;strong&gt;inherently scalable&lt;/strong&gt;: no
+additional load is placed on the server when more users access the platform, as
+each of them is running their own instance of the search engine in their
+browser. Finally, if the implementation is efficient, search can be made much
+faster, as network latency is eliminated entirely, so results can be computed in
+real time as the user types.&lt;/p&gt;
+
+&lt;p&gt;Of course, there are limits to how big a collection of documents can be in order
+to fit in the browser memory, but with a good implementation these limits are
+&lt;strong&gt;surprisingly high&lt;/strong&gt;. This enables interesting use cases, like searching within
+a mobile application, or through an address book, in ways that yield much better
+results than a crude search with a regular expression.&lt;/p&gt;
+
+&lt;h2&gt;Implementing the index&lt;/h2&gt;
+
+&lt;p&gt;On the other hand, is it really possible to efficiently index and store
+thousands of documents in the browser memory? As it turns out, if the index is
+implemented in a space-efficient way, and the documents to store are not too
+large, &lt;strong&gt;the answer is yes&lt;/strong&gt;. As a rough calculation, if we have 5000 documents
+to search amongst, and each document is on average 200 characters long (maybe we
+are only iterested in searching by title, or within a small description), then
+storing all the documents in uncompressed form takes roughly 2MB (JavaScript
+strings are typically stored using 2 bytes per character). Now, 2MB is of the
+same order of dimension of a good quality image, and usually more than
+acceptable to store in memory.&lt;/p&gt;
+
+&lt;p&gt;There is one problem with this calculation though: it is only taking into
+account the size of the raw documents, not of the search index data. Typical
+implementations of inverse indexes for full-text search, &lt;strong&gt;trade off space
+utilization for lookup efficiency&lt;/strong&gt;, and therefore take a lot more space than
+the original documents. This is not a problem for search engines running
+server-side, where data can be stored on disk, and also RAM is plenty, but it is
+not acceptable if the index data has to live in the browser memory. Can we
+devise a data structure that is &lt;strong&gt;at the same time compact and efficient&lt;/strong&gt;?&lt;/p&gt;
+
+&lt;p&gt;Luckily, there are some good candidates. One data structure that fits our
+requirements particularily well, and therefore the one I ended up choosing, is
+the &lt;a href="https://en.wikipedia.org/wiki/Radix_tree"&gt;radix tree&lt;/a&gt;: it is a variant of a
+prefix tree that further optimizes space by merging nodes that are the only
+children with their parent. A radix tree is a great candidate for our space
+constrained inverted index because:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;It supports &lt;strong&gt;efficient lookup&lt;/strong&gt; of a term, in time proportional to the
+ length of the term being searched. The same holds for insertion and
+ deletion.&lt;/li&gt;
+&lt;li&gt;Being it a prefix tree, searching for all terms &lt;strong&gt;having a certain prefix&lt;/strong&gt;
+ is also efficient, and takes time proportional to the length of the prefix.&lt;/li&gt;
+&lt;li&gt;The data structure is compact, because &lt;strong&gt;common prefixes are stored only
+ once&lt;/strong&gt;. Because of that, in some cases the index could even be smaller than
+ the original collection of documents. In general, the index size will be of
+ the same order of dimension as the size of the collection of documents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Fuzzy&amp;rdquo; search&lt;/strong&gt;, which is searching for terms within a maximum &lt;a href="https://en.wikipedia.org/wiki/Edit_distance"&gt;edit
+ distance&lt;/a&gt; from a given term,
+ can also be implemented. It cannot be as efficient as in other techniques
+ like &lt;a href="https://en.wikipedia.org/wiki/N-gram"&gt;n-gram&lt;/a&gt; indexes, but for small
+ edit distances it can be made efficient enough. Also, as the search happens
+ client-side, it makes sense to use a bit more CPU, while keeping the index
+ smaller. Other data structures allowing for efficient fuzzy search would
+ take a lot more space.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Implementing a radix tree in JavaScript is not trivial, but with some patience
+and a good amount of testing it is well worth (and also quite enjoyable if you
+are a data structures enthusiast like me). The radix tree implementation ended
+up taking &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js"&gt;less than 300 lines of
+code&lt;/a&gt;,
+and is &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.test.js"&gt;thoroughfully
+tested&lt;/a&gt;,
+including some generative &lt;strong&gt;property based tests&lt;/strong&gt;, that I find especially
+valuable in algorithmic code in order to discover unforeseen corner cases.&lt;/p&gt;
+
+&lt;p&gt;Building on the robust foundations of the radix tree implementation, the search
+engine itself was mostly a matter of building up the index in a way that
+supports all the planned features (boosting, search in a specific field, etc.),
+and following well researched ranking algorithms like
+&lt;a href="https://en.wikipedia.org/wiki/Tf–idf"&gt;Tf-Idf&lt;/a&gt;. The most complicated part was
+implementing fuzzy search, which is done by traversing the radix tree while
+maintaining a &amp;ldquo;budget&amp;rdquo; of edits: if we are looking for the word &amp;ldquo;color&amp;rdquo; within
+an edit distance of 2, we will find &amp;ldquo;colour&amp;rdquo; (edit distance 1), and &amp;ldquo;connor&amp;rdquo;
+(edit distance 2), but not &amp;ldquo;colorful&amp;rdquo; (edit distance 3, exceeding budget).&lt;/p&gt;
+
+&lt;p&gt;A suite of &lt;a href="https://github.com/lucaong/minisearch/tree/master/benchmarks"&gt;performance
+benchmarks&lt;/a&gt; also
+provides a convenient way to measure performance improvements and avoid
+regressions. Measuring performance in a standardized way is especially important
+for algorithmic code, where it is otherwise too common to make the mistake of
+implementing &amp;ldquo;optimizations&amp;rdquo; that obfuscate the code while not giving any
+tangible benefit.&lt;/p&gt;
+
+&lt;h2&gt;Comparison with other libraries&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is not the only library of its kind. There are a few other
+libraries with similar goals, among which &lt;a href="https://lunrjs.com"&gt;Lunr.js&lt;/a&gt;,
+&lt;a href="http://fusejs.io"&gt;Fuse.js&lt;/a&gt;. These libraries are well implemented, and allthough
+they all provide client-side fulltext search, they have different use cases and
+feature sets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Fuse.js&lt;/strong&gt; is optimized for smaller collections of documents: it uses the
+&lt;a href="https://en.wikipedia.org/wiki/Bitap_algorithm"&gt;Bitap algorithm&lt;/a&gt;, that provides
+good fuzzy matching, but requires to iterate the whole collection for each
+search. For this reason it was not ideal for my use case, in which I can easily
+have more than ten thousand documents to search among.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Lunr.js&lt;/strong&gt; is probably the most similar library. It is well implemented, and
+uses an approach which is quite similar to MiniSearch. The project is well
+maintained, and I can definitely recommend it (I also contributed a pull request
+to the library, and the maintainer is nice and responsive). The notable
+differences with MiniSearch are the following:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;MiniSearch index takes &lt;strong&gt;sensibly less space&lt;/strong&gt; than Lunr&amp;rsquo;s one. On my
+ applications, it typically uses up 40% of the space used by Lunr, for the
+ same collection. This was one of the main design goals of MiniSearch, to
+ support memory-constrained cases like mobile apps. That said, Lunr is
+ already quite space optimized, so for many use cases this difference won&amp;rsquo;t
+ be too important.&lt;/li&gt;
+&lt;li&gt;Lunr comes with &lt;strong&gt;stemming and language support&lt;/strong&gt;. MiniSearch provides the
+ facilities to add those, but does not provide them out of the box.
+ Stemming and language support are useful features, but they are often not
+ needed, make the library bigger, and can lead to confusing results. For
+ these reasons, I chose to leave them out of scope for MiniSearch, and
+ explain instead in the docs how to add them, if needed. That said, if you
+ know you need them, Lunr might be an easier choice.&lt;/li&gt;
+&lt;li&gt;Lunr index cannot be changed after creation. MiniSearch instead makes it
+ possible to &lt;strong&gt;add and remove documents&lt;/strong&gt; to the index at any moment. If
+ dynamic updates to the index are necessary (that was my case), then
+ MiniSearch can be a good option.&lt;/li&gt;
+&lt;li&gt;Lunr provides an &lt;strong&gt;advanced query language&lt;/strong&gt; that can express some queries
+ that are not possible in MiniSearch (for example, searching for terms that
+ start with &amp;ldquo;uni&amp;rdquo; and end with &amp;ldquo;ty&amp;rdquo;, like &amp;ldquo;unity&amp;rdquo; and &amp;ldquo;university&amp;rdquo;). On the
+ other hand, if you do not need those, you might find MiniSearch API simpler
+ to use.&lt;/li&gt;
+&lt;li&gt;MiniSearch offers &lt;strong&gt;auto-suggestions&lt;/strong&gt; out of the box, to complete partial
+ queries. For example, for the partial search &amp;ldquo;uni&amp;rdquo;, it can suggest
+ &amp;ldquo;university&amp;rdquo;, &amp;ldquo;unicorn&amp;rdquo;, etc. The suggestions are calculated on the actual
+ documents, and ranked by relevance. This can be used to implement
+ auto-completion, like in the demo application shown above. Lunr does not
+ currently offer this feature.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Notably, MiniSearch, Lunr, and Fuse.js all come with zero runtime dependencies,
+which is quite a good surprise for a JavaScript package!&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I hope I managed to give a good enough introduction to client-side fulltext
+search, its advantages and disadvantages, and the design decisions behind
+&lt;strong&gt;MiniSearch&lt;/strong&gt;. I had quite some fun implementing this library, and it is by now
+successfully used in production on way more use cases than I initially
+forecasted. It was also a nice experience to read through other implementations,
+and contribute to them: it is interesting how each library came to some
+different ingenious solution to this tricky problem.&lt;/p&gt;
+
+&lt;p&gt;If you are considering to adopt MiniSearch for a project, you might want to read
+through the &lt;a href="https://lucaong.github.io/minisearch/"&gt;documentation&lt;/a&gt; and the &lt;a href="https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html"&gt;API
+reference&lt;/a&gt;.&lt;/p&gt;
+</content>
+  </entry>
   <entry>
     <title>Adopting best practices without being adopted by them</title>
     <link rel="alternate" href="http://blog.url.com/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html"/>
