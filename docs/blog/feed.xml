@@ -10,17 +10,17 @@
     <name>Blog Author</name>
   </author>
   <entry>
-    <title>MiniSearch, a client-side fulltext search engine</title>
+    <title>MiniSearch, a client-side full-text search engine</title>
     <link rel="alternate" href="http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-01-31T18:16:49+01:00</updated>
+    <updated>2019-01-31T18:54:35+01:00</updated>
     <author>
       <name>Article Author</name>
     </author>
     <content type="html">&lt;p&gt;This blog post is to introduce
 &lt;a href="https://github.com/lucaong/minisearch"&gt;MiniSearch&lt;/a&gt;, a JavaScript library that
-provides &lt;strong&gt;client-side fulltext search&lt;/strong&gt; capabilities. It has zero runtime
+provides &lt;strong&gt;client-side full-text search&lt;/strong&gt; capabilities. It has zero runtime
 dependencies, and uses a space optimized index to support memory constrained
 environments like mobile browsers. It offers &lt;strong&gt;prefix search&lt;/strong&gt;, &lt;strong&gt;fuzzy match&lt;/strong&gt;,
 &lt;strong&gt;boosting&lt;/strong&gt;, &lt;strong&gt;auto suggestions&lt;/strong&gt;, and many of the features expected from a
@@ -118,20 +118,19 @@ time&lt;/strong&gt; as the user types, with no detectable latency.&lt;/p&gt;
 
 &lt;p&gt;Recently, for a web application I was working on, I needed to allow users to
 search for products in the inventory of several resellers. Each of these
-resellers typically offers a few thousands of products. The app needed to offer
-advanced fulltext features like &lt;strong&gt;fuzzy match&lt;/strong&gt; (finding results also when a
-term does not match exactly, for example due to a mispell), &lt;strong&gt;prefix search&lt;/strong&gt;
-(searching for the initial part of a term should already yield results before
-the whole word is typed in), and proper &lt;strong&gt;ranking of results&lt;/strong&gt; (more relevant
-results should appear first).&lt;/p&gt;
+resellers typically offers several thousands different products. The app needed
+to offer advanced full-text features like &lt;strong&gt;fuzzy match&lt;/strong&gt; (finding results also
+when a term does not match exactly, for example due to a mispell), &lt;strong&gt;prefix
+search&lt;/strong&gt; (searching for the initial part of a term should already yield results
+before the whole word is typed in), and proper &lt;strong&gt;ranking of results&lt;/strong&gt; (more
+relevant results should appear first).&lt;/p&gt;
 
 &lt;p&gt;Normally, for such use cases, a search engine like &lt;strong&gt;Solr&lt;/strong&gt; or &lt;strong&gt;ElasticSearch&lt;/strong&gt;
-would be the obvious choice. The challenge though, was to make the search
-feature as fast as possible, but also resilient to spotty Internet connections
-on users&amp;rsquo; smartphones. I started to think whether it would make sense to
-implement the search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might
-sound a bit unorthodox, but if possible at all, it would have given us several
-advantages.&lt;/p&gt;
+would be the obvious choice. The challenge though, was to make search as fast as
+possible, but also resilient to spotty Internet connections on users&amp;rsquo;
+smartphones. I started to think whether it would make sense to implement the
+search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might sound a bit
+unorthodox, but if possible at all, it would have given us several advantages.&lt;/p&gt;
 
 &lt;p&gt;First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -152,15 +151,15 @@ results than a crude search with a regular expression.&lt;/p&gt;
 
 &lt;h2&gt;Implementing the index&lt;/h2&gt;
 
-&lt;p&gt;On the other hand, is it really possible to efficiently index and store
-thousands of documents in the browser memory? As it turns out, if the index is
-implemented in a space efficient way, and the documents to store are not too
-large, &lt;strong&gt;the answer is yes&lt;/strong&gt;. As a rough calculation, if we have 5000 documents
-to search amongst, and each document is on average 200 characters long (maybe we
-are only iterested in searching by title, or within a small description), then
-storing all the documents in uncompressed form takes roughly 2MB (JavaScript
-strings are typically stored using 2 bytes per character). Now, 2MB is of the
-same order of dimension of a good quality image, and usually more than
+&lt;p&gt;Is it really possible to efficiently index and store thousands of documents in
+the browser memory? As it turns out, if the index is implemented in a space
+efficient way, and the documents to store are not too large, &lt;strong&gt;the answer is
+yes&lt;/strong&gt;. As a rough calculation, if we have 5000 documents to search amongst, and
+each document is on average 200 characters long (either documents are small, or
+we are only iterested in searching by title, or within a small description),
+then storing all the documents in uncompressed form takes roughly 2MB
+(JavaScript strings are typically stored using 2 bytes per character). Now, 2MB
+is of the same order of dimension of a good quality image, and usually more than
 acceptable to store in memory.&lt;/p&gt;
 
 &lt;p&gt;There is one problem with this calculation though: it is only taking into
@@ -222,24 +221,24 @@ an edit distance of 2, we will find &amp;ldquo;colour&amp;rdquo; (edit distance 
 &lt;p&gt;A suite of &lt;a href="https://github.com/lucaong/minisearch/tree/master/benchmarks"&gt;performance
 benchmarks&lt;/a&gt; also
 provides a convenient way to measure performance improvements and avoid
-regressions. Measuring performance in a standardized way is especially important
-for algorithmic code, where it is otherwise too common to make the mistake of
+regressions. Measuring performance in a rigorous way is especially important for
+algorithmic code, where it is otherwise far too common to make the mistake of
 implementing &amp;ldquo;optimizations&amp;rdquo; that obfuscate the code while not giving any
 tangible benefit.&lt;/p&gt;
 
 &lt;h2&gt;Comparison with other libraries&lt;/h2&gt;
 
 &lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is not the only library of its kind. There are a few other
-libraries with similar goals, among which &lt;a href="https://lunrjs.com"&gt;Lunr.js&lt;/a&gt;,
-&lt;a href="http://fusejs.io"&gt;Fuse.js&lt;/a&gt;. These libraries are well implemented, and allthough
-they all provide client-side fulltext search, they have different use cases and
+libraries with similar goals, among which &lt;a href="https://lunrjs.com"&gt;Lunr.js&lt;/a&gt; and
+&lt;a href="http://fusejs.io"&gt;Fuse.js&lt;/a&gt;. These libraries are well implemented, and although
+they all provide client-side full-text search, they have different use cases and
 feature sets.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Fuse.js&lt;/strong&gt; is optimized for smaller collections of documents: it uses the
 &lt;a href="https://en.wikipedia.org/wiki/Bitap_algorithm"&gt;Bitap algorithm&lt;/a&gt;, that provides
-good fuzzy matching, but requires to iterate the whole collection for each
-search. For this reason it was not ideal for my use case, in which I can easily
-have more than ten thousand documents to search among.&lt;/p&gt;
+good fuzzy matching, but iterates through the whole collection of documents upon
+each search. For this reason it was not ideal for my use case, where I could
+easily have several thousand documents to search among.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Lunr.js&lt;/strong&gt; is probably the most similar library. It is well implemented, and
 uses an approach which is quite similar to MiniSearch. The project is well
@@ -283,7 +282,7 @@ which is quite a good surprise for a JavaScript package!&lt;/p&gt;
 
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 
-&lt;p&gt;I hope I managed to give a good enough introduction to client-side fulltext
+&lt;p&gt;I hope I managed to give a good enough introduction to client-side full-text
 search, its advantages and disadvantages, and the design decisions behind
 &lt;strong&gt;MiniSearch&lt;/strong&gt;. I had quite some fun implementing this library, and it is by now
 successfully used in production on way more use cases than I initially

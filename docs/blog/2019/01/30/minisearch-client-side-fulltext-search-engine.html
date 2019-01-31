@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-    <title>Luca Ongaro - MiniSearch, a client-side fulltext search engine</title>
+    <title>Luca Ongaro - MiniSearch, a client-side full-text search engine</title>
 
     <link href="/stylesheets/main.css" rel="stylesheet" />
       <link href="/stylesheets/highlighting.css" rel="stylesheet" />
@@ -45,7 +45,7 @@
       <main>
     <article>
       <h1>
-        MiniSearch, a client-side fulltext search engine
+        MiniSearch, a client-side full-text search engine
         <small>Jan 30, 2019</small>
       </h1>
 
@@ -60,7 +60,7 @@
 
       <p>This blog post is to introduce
 <a href="https://github.com/lucaong/minisearch">MiniSearch</a>, a JavaScript library that
-provides <strong>client-side fulltext search</strong> capabilities. It has zero runtime
+provides <strong>client-side full-text search</strong> capabilities. It has zero runtime
 dependencies, and uses a space optimized index to support memory constrained
 environments like mobile browsers. It offers <strong>prefix search</strong>, <strong>fuzzy match</strong>,
 <strong>boosting</strong>, <strong>auto suggestions</strong>, and many of the features expected from a
@@ -158,20 +158,19 @@ time</strong> as the user types, with no detectable latency.</p>
 
 <p>Recently, for a web application I was working on, I needed to allow users to
 search for products in the inventory of several resellers. Each of these
-resellers typically offers a few thousands of products. The app needed to offer
-advanced fulltext features like <strong>fuzzy match</strong> (finding results also when a
-term does not match exactly, for example due to a mispell), <strong>prefix search</strong>
-(searching for the initial part of a term should already yield results before
-the whole word is typed in), and proper <strong>ranking of results</strong> (more relevant
-results should appear first).</p>
+resellers typically offers several thousands different products. The app needed
+to offer advanced full-text features like <strong>fuzzy match</strong> (finding results also
+when a term does not match exactly, for example due to a mispell), <strong>prefix
+search</strong> (searching for the initial part of a term should already yield results
+before the whole word is typed in), and proper <strong>ranking of results</strong> (more
+relevant results should appear first).</p>
 
 <p>Normally, for such use cases, a search engine like <strong>Solr</strong> or <strong>ElasticSearch</strong>
-would be the obvious choice. The challenge though, was to make the search
-feature as fast as possible, but also resilient to spotty Internet connections
-on users&rsquo; smartphones. I started to think whether it would make sense to
-implement the search index <strong>client-side instead of server-side</strong>: it might
-sound a bit unorthodox, but if possible at all, it would have given us several
-advantages.</p>
+would be the obvious choice. The challenge though, was to make search as fast as
+possible, but also resilient to spotty Internet connections on users&rsquo;
+smartphones. I started to think whether it would make sense to implement the
+search index <strong>client-side instead of server-side</strong>: it might sound a bit
+unorthodox, but if possible at all, it would have given us several advantages.</p>
 
 <p>First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -192,15 +191,15 @@ results than a crude search with a regular expression.</p>
 
 <h2>Implementing the index</h2>
 
-<p>On the other hand, is it really possible to efficiently index and store
-thousands of documents in the browser memory? As it turns out, if the index is
-implemented in a space efficient way, and the documents to store are not too
-large, <strong>the answer is yes</strong>. As a rough calculation, if we have 5000 documents
-to search amongst, and each document is on average 200 characters long (maybe we
-are only iterested in searching by title, or within a small description), then
-storing all the documents in uncompressed form takes roughly 2MB (JavaScript
-strings are typically stored using 2 bytes per character). Now, 2MB is of the
-same order of dimension of a good quality image, and usually more than
+<p>Is it really possible to efficiently index and store thousands of documents in
+the browser memory? As it turns out, if the index is implemented in a space
+efficient way, and the documents to store are not too large, <strong>the answer is
+yes</strong>. As a rough calculation, if we have 5000 documents to search amongst, and
+each document is on average 200 characters long (either documents are small, or
+we are only iterested in searching by title, or within a small description),
+then storing all the documents in uncompressed form takes roughly 2MB
+(JavaScript strings are typically stored using 2 bytes per character). Now, 2MB
+is of the same order of dimension of a good quality image, and usually more than
 acceptable to store in memory.</p>
 
 <p>There is one problem with this calculation though: it is only taking into
@@ -262,24 +261,24 @@ an edit distance of 2, we will find &ldquo;colour&rdquo; (edit distance 1), and 
 <p>A suite of <a href="https://github.com/lucaong/minisearch/tree/master/benchmarks">performance
 benchmarks</a> also
 provides a convenient way to measure performance improvements and avoid
-regressions. Measuring performance in a standardized way is especially important
-for algorithmic code, where it is otherwise too common to make the mistake of
+regressions. Measuring performance in a rigorous way is especially important for
+algorithmic code, where it is otherwise far too common to make the mistake of
 implementing &ldquo;optimizations&rdquo; that obfuscate the code while not giving any
 tangible benefit.</p>
 
 <h2>Comparison with other libraries</h2>
 
 <p><strong>MiniSearch</strong> is not the only library of its kind. There are a few other
-libraries with similar goals, among which <a href="https://lunrjs.com">Lunr.js</a>,
-<a href="http://fusejs.io">Fuse.js</a>. These libraries are well implemented, and allthough
-they all provide client-side fulltext search, they have different use cases and
+libraries with similar goals, among which <a href="https://lunrjs.com">Lunr.js</a> and
+<a href="http://fusejs.io">Fuse.js</a>. These libraries are well implemented, and although
+they all provide client-side full-text search, they have different use cases and
 feature sets.</p>
 
 <p><strong>Fuse.js</strong> is optimized for smaller collections of documents: it uses the
 <a href="https://en.wikipedia.org/wiki/Bitap_algorithm">Bitap algorithm</a>, that provides
-good fuzzy matching, but requires to iterate the whole collection for each
-search. For this reason it was not ideal for my use case, in which I can easily
-have more than ten thousand documents to search among.</p>
+good fuzzy matching, but iterates through the whole collection of documents upon
+each search. For this reason it was not ideal for my use case, where I could
+easily have several thousand documents to search among.</p>
 
 <p><strong>Lunr.js</strong> is probably the most similar library. It is well implemented, and
 uses an approach which is quite similar to MiniSearch. The project is well
@@ -323,7 +322,7 @@ which is quite a good surprise for a JavaScript package!</p>
 
 <h2>Conclusion</h2>
 
-<p>I hope I managed to give a good enough introduction to client-side fulltext
+<p>I hope I managed to give a good enough introduction to client-side full-text
 search, its advantages and disadvantages, and the design decisions behind
 <strong>MiniSearch</strong>. I had quite some fun implementing this library, and it is by now
 successfully used in production on way more use cases than I initially
@@ -342,7 +341,7 @@ reference</a>.</p>
           <li><a href="/blog/tags/javascript.html">javascript</a></li>
           <li><a href="/blog/tags/programming.html">programming</a></li>
           <li><a href="/blog/tags/search.html">search</a></li>
-          <li><a href="/blog/tags/fulltext.html">fulltext</a></li>
+          <li><a href="/blog/tags/full-text.html">full-text</a></li>
           <li><a href="/blog/tags/algorithms.html">algorithms</a></li>
           <li><a href="/blog/tags/data-structures.html">data structures</a></li>
       </ul>
