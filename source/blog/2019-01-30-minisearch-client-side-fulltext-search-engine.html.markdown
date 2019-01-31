@@ -57,32 +57,31 @@ miniSearch.autoSuggest('zen ar')
 //      { suggestion: 'zen art', terms: [ 'zen', 'art' ], score: 1.21313 } ]
 ```
 
-To see it in action, here is a small demo application to play with, and
-to experiment with different options:
+Here is a small demo application to play with, and experiment with different
+options:
 
 <iframe src='https://lucaong.github.io/minisearch/examples/'
 style='border: none; background: #fafafa; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
 border-radius: 5px; width: 100%; height: 440px; margin: 1em 0;'></iframe>
 
-As you can test in the demo, the **~5000 songs** are indexed client-side upon
+As can be tested in the demo, the **~5000 songs** are indexed client-side upon
 each page load in a fraction of a second, and the search happens in **real
 time** as the user types, with no detectable latency.
 
-In the following part of this blog post, I would like to tell a bit more about
-the background story behing this library, and the specifics of its
-implementation.
+In the following part of this blog post, I will tell a bit more about the
+background story behing this library, and the specifics of its implementation.
 
 
 ## Why would I ever implement a search engine client-side
 
-Recently, for a web application I was working, I needed to allow users to search
-for products in the inventory of several resellers. Each of these resellers
-typically offers a few thousands of products. The app needed to offer advanced
-fulltext features like **fuzzy match** (finding results also when a term does
-not match exactly, for example due to a mispell), **prefix search** (searching
-for the initial part of a term should already yield results before the whole
-word is typed in), and proper **ranking of results** (more relevant results
-should appear first).
+Recently, for a web application I was working on, I needed to allow users to
+search for products in the inventory of several resellers. Each of these
+resellers typically offers a few thousands of products. The app needed to offer
+advanced fulltext features like **fuzzy match** (finding results also when a
+term does not match exactly, for example due to a mispell), **prefix search**
+(searching for the initial part of a term should already yield results before
+the whole word is typed in), and proper **ranking of results** (more relevant
+results should appear first).
 
 Normally, for such use cases, a search engine like **Solr** or **ElasticSearch**
 would be the obvious choice. The challenge though, was to make the search
