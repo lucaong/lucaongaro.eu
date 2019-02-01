@@ -274,12 +274,14 @@ strong {
   margin: 0 0 1.5rem 0;
   padding: 0;
 }
+.latest-posts p {
+  margin: 0;
+}
 .latest-posts li {
-  margin-bottom: 1em;
+  margin-bottom: 3em;
 }
 .latest-posts .read-more {
   display: block;
-  margin-top: -0.5em;
   text-align: right;
 }
 
@@ -306,6 +308,17 @@ strong {
 }
 .tags a:hover {
   background: rgba(204, 119, 0, 0.2);
+}
+
+a.button {
+  display: inline-block;
+  padding: 0.2em 0.5em;
+  margin: 0.2em 0;
+  font-size: 0.8em;
+  border: 1px solid rgba(22, 82, 128, 0.2);
+  text-decoration: none;
+  transition: all 0.15s ease-in;
+  border-radius: 3px;
 }
 
 .pagination {
