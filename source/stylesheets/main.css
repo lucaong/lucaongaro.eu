@@ -4,17 +4,17 @@
 
 html {
   font-family: "Martel", "Georgia", "Cambria", serif;
-  font-size: 18px;
+  font-size: 16px;
   text-rendering: optimizeLegibility;
 }
 
 body {
-  background: rgba(252, 214, 103, 0.05);
+  background-color: white;
   background-image: url(/images/noise.png);
   color: #000;
   padding: 0;
   margin: 0;
-  font-size: 18px;
+  font-size: 16px;
 }
 
 header {
@@ -39,7 +39,7 @@ header nav h1 {
   padding: 0;
   font-size: 1.5rem;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
-  color: #fef5dc;
+  color: #fefefe;
 }
 
 header nav h1 b {
@@ -102,7 +102,8 @@ header nav.open ol {
 main {
   font-family: "Martel", "Georgia", "Cambria", serif;
   -webkit-font-smoothing: antialiased;
-  line-height: 1.57;
+  text-rendering: optimizeLegibility;
+  line-height: 1.81;
   margin: 4rem 1rem 0 1rem;
   padding: 0;
 }
@@ -119,15 +120,15 @@ body > footer > span:not(:last-child):after {
   content: " | ";
 }
 
-article, figure, p {
+article, figure, p, article li {
   padding: 0;
-  margin: 0 0 0.5em 0;
+  margin: 0 0 1.81em 0;
 }
 
 article > p:first-of-type:first-letter {
   float: left;
-  font-size: 3.1em;
-  line-height: 0.4em;
+  font-size: 3.3em;
+  line-height: 0.5em;
   margin: 0.39em 0.15em 0 0;
   color: #135280;
 }
@@ -321,9 +322,14 @@ strong {
   visibility: hidden;
 }
 
-@media (min-width: 42em) {
+@media (min-width: 46em) {
+  html {
+    font-size: 18px;
+  }
+
   body {
     color: #333;
+    font-size: 18px;
   }
 
   header nav {
@@ -358,10 +364,11 @@ strong {
 
   main {
     margin-top: 5rem;
+    line-height: 1.57;
   }
 
   article {
-    max-width: 35rem;
+    max-width: 38rem;
     margin: 0 auto 1rem auto;
   }
 
