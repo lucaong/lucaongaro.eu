@@ -18,7 +18,7 @@
     <author>
       <name>Luca Ongaro</name>
     </author>
-    <summary type="html">&lt;p&gt;This blog post is to introduce
+    <content type="html">&lt;p&gt;This blog post is to introduce
 &lt;a href="https://github.com/lucaong/minisearch"&gt;MiniSearch&lt;/a&gt;, a JavaScript library that
 provides &lt;strong&gt;client-side full-text search&lt;/strong&gt; capabilities. It has zero runtime
 dependencies, and uses a space optimized index to support memory constrained
@@ -27,7 +27,279 @@ environments like mobile browsers. It offers &lt;strong&gt;prefix search&lt;/str
 server-side search engine like Solr or Elastic Search.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is designed to be flexible and easy to use, and I think that a
-quick example…&lt;/p&gt;</summary>
+quick example can introduce it better than a long explanation:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight javascript"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="c1"&gt;// A collection of documents we want to search&lt;/span&gt;
+&lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;documents&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Moby Dick'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Call me Ishmael. Some years ago...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Zen and the Art of Motorcycle Maintenance'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'I can see by my watch...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;3&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Neuromancer'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'The sky above the port was...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;4&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Zen and the Art of Archery'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'At first sight it must seem...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+  &lt;span class="c1"&gt;// ...and more&lt;/span&gt;
+&lt;span class="p"&gt;]&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Create the search engine, and set `title` and `text` as searchable fields&lt;/span&gt;
+&lt;span class="kd"&gt;let&lt;/span&gt; &lt;span class="nx"&gt;miniSearch&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="k"&gt;new&lt;/span&gt; &lt;span class="nx"&gt;MiniSearch&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt; &lt;span class="na"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="s1"&gt;'text'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Index all documents (this is fast!)&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;addAll&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="nx"&gt;documents&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Search with default options. It will return the id of the matching documents,&lt;/span&gt;
+&lt;span class="c1"&gt;// along with a relevance score and match information&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen art motorcycle'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;// =&amp;gt; [ { id: 2, score: 2.77258, match: { ... } }, { id: 4, score: 1.38629, match: { ... } } ]&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Search only within specific fields&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;fields&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="s1"&gt;'title'&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Boost some fields to give them more importance (here "title")&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;boost&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt; &lt;span class="p"&gt;}&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Prefix search (so that 'moto' will match 'motorcycle')&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'moto'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;prefix&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="kc"&gt;true&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Fuzzy search, in this example, with a max edit distance of 0.2 * term length.&lt;/span&gt;
+&lt;span class="c1"&gt;// The mispelled 'ismael' will match 'ishmael'.&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;search&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'ismael'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;fuzzy&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mf"&gt;0.2&lt;/span&gt; &lt;span class="p"&gt;})&lt;/span&gt;
+
+&lt;span class="c1"&gt;// Get suggestions for a partial search&lt;/span&gt;
+&lt;span class="nx"&gt;miniSearch&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nx"&gt;autoSuggest&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="s1"&gt;'zen ar'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="c1"&gt;// =&amp;gt; [ { suggestion: 'zen archery art', terms: [ 'zen', 'archery', 'art' ], score: 1.73332 },&lt;/span&gt;
+&lt;span class="c1"&gt;//      { suggestion: 'zen art', terms: [ 'zen', 'art' ], score: 1.21313 } ]&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Here is a small demo application to play with, and experiment with different
+options:&lt;/p&gt;
+
+&lt;iframe src='https://lucaong.github.io/minisearch/examples/'
+style='border: none; background: #fafafa; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+border-radius: 5px; width: 100%; height: 440px; margin: 1em 0;'&gt;&lt;/iframe&gt;
+
+&lt;p&gt;As can be tested in the demo, the &lt;strong&gt;~5000 songs&lt;/strong&gt; are indexed client-side upon
+each page load in a fraction of a second, and the search happens in &lt;strong&gt;real
+time&lt;/strong&gt; as the user types, with no detectable latency.&lt;/p&gt;
+
+&lt;h2&gt;What&amp;rsquo;s the point of a client-side search engine?&lt;/h2&gt;
+
+&lt;p&gt;Recently, for a web application I was working on, I needed to allow users to
+search for products in the inventory of several resellers. Each of these
+resellers typically offers several thousands different products. The app needed
+to offer advanced full-text features like &lt;strong&gt;fuzzy match&lt;/strong&gt; (finding results also
+when a term does not match exactly, for example due to a mispell), &lt;strong&gt;prefix
+search&lt;/strong&gt; (searching for the initial part of a term should already yield results
+before the whole word is typed in), and proper &lt;strong&gt;ranking of results&lt;/strong&gt; (more
+relevant results should appear first).&lt;/p&gt;
+
+&lt;p&gt;Normally, for such use cases, a search engine like &lt;strong&gt;Solr&lt;/strong&gt; or &lt;strong&gt;ElasticSearch&lt;/strong&gt;
+would be the obvious choice. The challenge though, was to make search as fast as
+possible, but also resilient to spotty Internet connections on users&amp;rsquo;
+smartphones. I started to think whether it would make sense to implement the
+search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might sound a bit
+unorthodox, but it would have given us several advantages.&lt;/p&gt;
+
+&lt;p&gt;First, once the index is loaded, a temporary interruption of the Internet
+connectivity would not affect the search experience: if the search index lives
+on the client side, &lt;strong&gt;no network request is necessary&lt;/strong&gt;. Moreover, there would
+be no need to setup and run a search server, making the architecture simpler.
+Running the search engine client-side is also &lt;strong&gt;inherently scalable&lt;/strong&gt;: no
+additional load is placed on the server when more users access the platform, as
+each of them is running their own instance of the search engine in their
+browser. Finally, with a good implementation, search can be made much faster, as
+network latency is eliminated entirely, and results can be computed in real time
+as the user types.&lt;/p&gt;
+
+&lt;p&gt;Of course, there are limits to how big a collection of documents can be in order
+to fit in the browser memory, but these limits are &lt;strong&gt;surprisingly high&lt;/strong&gt;,
+especially when using the right data structures. Some use cases that are served
+well by client-side search are, for example, product search for a medium-sized
+online shop, search through a blog, or address book search. Proper full-text
+search can give a much better user experience compared to a crude string
+comparison or regular expression search, due to better ranking of results and
+handling of mispelled terms.&lt;/p&gt;
+
+&lt;h2&gt;Implementing the index&lt;/h2&gt;
+
+&lt;p&gt;As a rough calculation, if we have 5000 documents to search amongst, and each
+document is on average 200 characters long (either documents are small, or we
+are only iterested in searching by title, or within a small description), then
+storing all the documents in uncompressed form takes roughly 2MB (JavaScript
+strings are typically stored using 2 bytes per character). That is more or less
+the size of a good quality image, and usually more than acceptable to store in
+memory.&lt;/p&gt;
+
+&lt;p&gt;There is one problem with this calculation though: it is only taking into
+account the size of the raw documents, not of the search index data. Typical
+implementations of inverse indexes for full-text search, &lt;strong&gt;trade off space
+utilization for lookup efficiency&lt;/strong&gt;, and therefore take a lot more space than
+the original documents. This is not a problem for search engines running
+server-side, where data can be stored on disk, and also RAM is plenty, but it is
+not acceptable if the index data has to live in the browser memory. Can we
+devise a data structure that is &lt;strong&gt;at the same time compact and efficient&lt;/strong&gt;?&lt;/p&gt;
+
+&lt;p&gt;Luckily, there are some good candidates. One data structure that fits our
+requirements particularily well, and therefore the one I ended up choosing, is
+the &lt;a href="https://en.wikipedia.org/wiki/Radix_tree"&gt;radix tree&lt;/a&gt;: it is a variant of a
+prefix tree that further optimizes space by merging nodes that are the only
+children with their parent. A radix tree is a great candidate for our space
+constrained inverted index because:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;It supports &lt;strong&gt;efficient lookup&lt;/strong&gt; of a term, in time proportional to the
+ length of the term being searched. The same holds for insertion and
+ deletion.&lt;/li&gt;
+&lt;li&gt;Being it a prefix tree, searching for all terms &lt;strong&gt;having a certain prefix&lt;/strong&gt;
+ is also efficient, and takes time proportional to the length of the prefix.&lt;/li&gt;
+&lt;li&gt;The data structure is compact, because &lt;strong&gt;common prefixes are stored only
+ once&lt;/strong&gt;. Because of that, in some cases the index could even be smaller than
+ the original collection of documents. In general, the index size will be of
+ the same order of dimension as the size of the collection of documents.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;&amp;ldquo;Fuzzy&amp;rdquo; search&lt;/strong&gt;, which is searching for terms within a maximum &lt;a href="https://en.wikipedia.org/wiki/Edit_distance"&gt;edit
+ distance&lt;/a&gt; from a given term,
+ can also be implemented. It cannot be as efficient as in other techniques
+ like &lt;a href="https://en.wikipedia.org/wiki/N-gram"&gt;n-gram&lt;/a&gt; indexes, but for small
+ edit distances it can be made efficient enough. Also, as the search happens
+ client-side, it makes sense to use a bit more CPU, while keeping the index
+ smaller. Other data structures allowing for efficient fuzzy search would
+ take a lot more space.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Implementing a radix tree in JavaScript takes a little patience, but with a good
+amount of testing &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js"&gt;it is not
+difficult&lt;/a&gt;
+(and can be quite enjoyable if you are a data structure enthusiast like me).
+Along with the necessary unit tests, I find especially valuable in algorithmic
+code to add some generative &lt;strong&gt;property based tests&lt;/strong&gt;, to discover unforeseen
+corner cases.&lt;/p&gt;
+
+&lt;p&gt;Building on the foundations of a well-tested radix tree implementation, the
+search engine is mostly a matter of building up the index in a way that supports
+all the planned features (boosting, search in a specific field, etc.), and
+following well researched ranking algorithms like
+&lt;a href="https://en.wikipedia.org/wiki/Tf–idf"&gt;Tf-Idf&lt;/a&gt;. The most complex part was
+implementing fuzzy search, which is done by traversing the radix tree while
+maintaining a &amp;ldquo;budget&amp;rdquo; of edits: if we are looking for the word &amp;ldquo;color&amp;rdquo; within
+an edit distance of 2, we will find &amp;ldquo;colour&amp;rdquo; (edit distance 1), and &amp;ldquo;connor&amp;rdquo;
+(edit distance 2), but not &amp;ldquo;colorful&amp;rdquo; (edit distance 3, exceeding budget).&lt;/p&gt;
+
+&lt;p&gt;A suite of &lt;a href="https://github.com/lucaong/minisearch/tree/master/benchmarks"&gt;performance
+benchmarks&lt;/a&gt; also
+provides a convenient way to measure performance improvements and avoid
+regressions. Measuring performance in a rigorous way is especially important for
+algorithmic code, where it is otherwise far too common to make the mistake of
+implementing &amp;ldquo;optimizations&amp;rdquo; that obfuscate the code while not giving any
+tangible benefit.&lt;/p&gt;
+
+&lt;h2&gt;Comparison with other libraries&lt;/h2&gt;
+
+&lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is not the only library of its kind. There are a few other
+libraries with similar goals, among which &lt;a href="https://lunrjs.com"&gt;Lunr.js&lt;/a&gt; and
+&lt;a href="http://fusejs.io"&gt;Fuse.js&lt;/a&gt;. These libraries are well implemented, and although
+they all provide client-side full-text search, they have different use cases and
+feature sets.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Fuse.js&lt;/strong&gt; is optimized for smaller collections of documents: it uses the
+&lt;a href="https://en.wikipedia.org/wiki/Bitap_algorithm"&gt;Bitap algorithm&lt;/a&gt;, that provides
+good fuzzy matching, but iterates through the whole collection of documents upon
+each search. For this reason it was not ideal for my use case, where I could
+easily have several thousand documents to search among.&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;Lunr.js&lt;/strong&gt; is probably the most similar library. It is well implemented, and
+uses an approach which is quite similar to MiniSearch. The project is well
+maintained, and I can definitely recommend it, having used it in some projects
+already before switching to MiniSearch. The main differences with MiniSearch are
+the following:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;MiniSearch index takes &lt;strong&gt;sensibly less space&lt;/strong&gt; than Lunr&amp;rsquo;s one. On my
+ applications, it typically uses 40% of the space used by Lunr, for the same
+ collection. This was one of the main design goals of MiniSearch, to support
+ memory-constrained cases like mobile apps. That said, Lunr is already quite
+ space optimized, so for many use cases this difference won&amp;rsquo;t be too
+ important.&lt;/li&gt;
+&lt;li&gt;Lunr comes with &lt;strong&gt;stemming and language support&lt;/strong&gt;. MiniSearch provides the
+ facilities to add those, but does not provide them out of the box.
+ Stemming and language support are useful features, but they are often not
+ needed, make the library bigger, and can sometimes lead to unexpected
+ results. For these reasons, I chose to leave them out of scope for
+ MiniSearch, and explain instead in the docs how to add them, if needed.
+ That said, if you know you need them, Lunr might be an easier choice.&lt;/li&gt;
+&lt;li&gt;Lunr index cannot be changed after creation. MiniSearch instead makes it
+ possible to &lt;strong&gt;add and remove documents&lt;/strong&gt; to the index at any moment. If
+ documents in your collection are subject to change while the app is in use,
+ then MiniSearch makes it possible to index just the changes, instead of
+ re-indexing the whole collection.&lt;/li&gt;
+&lt;li&gt;Lunr provides an &lt;strong&gt;advanced query language&lt;/strong&gt; that can express some queries
+ that are currently not possible in MiniSearch. For example, Lunr can search
+ for terms that start with &amp;ldquo;uni&amp;rdquo; and end with &amp;ldquo;ty&amp;rdquo;, but have any character
+ in the middle, like &amp;ldquo;unity&amp;rdquo; and &amp;ldquo;university&amp;rdquo;. On the other hand, if you do
+ not need those, you might find MiniSearch API simpler to use.&lt;/li&gt;
+&lt;li&gt;MiniSearch offers an &lt;strong&gt;auto-suggestion&lt;/strong&gt; feature out of the box. For
+ example, for the partial search &amp;ldquo;uni&amp;rdquo;, MiniSearch could suggest
+ &amp;ldquo;university&amp;rdquo;, &amp;ldquo;unicorn&amp;rdquo;, etc. The suggestions are calculated on the actual
+ documents, and sorted by relevance. This feature can be used to implement
+ auto-completion, like in the demo application shown above. Lunr does not
+ currently offer this feature.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;Notably, MiniSearch, Lunr, and Fuse.js all come with zero runtime dependencies,
+which is quite a good surprise for JavaScript packages!&lt;/p&gt;
+
+&lt;h2&gt;Conclusion&lt;/h2&gt;
+
+&lt;p&gt;I hope I managed to give a good enough introduction to client-side full-text
+search, its pros and cons, and the design decisions behind &lt;strong&gt;MiniSearch&lt;/strong&gt;. I had
+quite some fun implementing this library, and I am happy to see it used in
+production by now on way more use cases than I initially forecasted. It was also
+a teachful experience to delve through the code of other similar libraries: each
+of them came to some different interesting solution to the tricky problem of
+implementing efficient client-side full-text search.&lt;/p&gt;
+
+&lt;p&gt;If you are considering to adopt MiniSearch for a project, you might want to read
+through the &lt;a href="https://lucaong.github.io/minisearch/"&gt;documentation&lt;/a&gt; and the &lt;a href="https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html"&gt;API
+reference&lt;/a&gt;.
+MiniSearch is open-source software, and contributions to its code and
+documentation are more than welcome!&lt;/p&gt;
+</content>
+    <summary type="html">&lt;p&gt;This blog post is to introduce
+&lt;a href="https://github.com/lucaong/minisearch"&gt;MiniSearch&lt;/a&gt;, a JavaScript library that
+provides &lt;strong&gt;client-side full-text search&lt;/strong&gt; capabilities. It has zero runtime
+dependencies, and uses a space optimized index to support memory constrained
+environments like mobile browsers...&lt;/p&gt;</summary>
   </entry>
   <entry>
     <title>Adopting best practices without being adopted by them</title>
@@ -38,7 +310,7 @@ quick example…&lt;/p&gt;</summary>
     <author>
       <name>Luca Ongaro</name>
     </author>
-    <summary type="html">&lt;p&gt;A software developer I know was recently faced with a problem: when practicing
+    <content type="html">&lt;p&gt;A software developer I know was recently faced with a problem: when practicing
 Test Driven Development (abbreviated as TDD), they felt that the resulting code
 tended not to follow design patterns. How can one achieve well structured code,
 that follows the Design Patterns, through TDD?&lt;/p&gt;
@@ -46,7 +318,118 @@ that follows the Design Patterns, through TDD?&lt;/p&gt;
 &lt;p&gt;I feel that this is an interesting question, because it uncovers some important
 considerations on the way software development is taught and practiced.&lt;/p&gt;
 
-&lt;p&gt;The issue, in my opinion, stems from a wrong (but understandable…&lt;/p&gt;</summary>
+&lt;p&gt;The issue, in my opinion, stems from a wrong (but understandable) assumption:
+that TDD and Design Patterns are best practices that a professional software
+developer is supposed to follow. Hence the feeling that something must be
+missing or wrong, if both cannot be achieved at the same time.&lt;/p&gt;
+
+&lt;p&gt;TDD and Design Patterns are both tools, not goals. They can be of great help,
+but they are in no way necessary attributes of good software development, nor
+rules to abide to.&lt;/p&gt;
+
+&lt;h2&gt;Design Patterns: the good and the bad&lt;/h2&gt;
+
+&lt;p&gt;Knowledge of Design Patterns is, in my opinion, much more useful for
+communication than for architecturing software. Patterns assign names to common
+&amp;ldquo;shapes&amp;rdquo; of software programs, and thus give us useful vocabulary to talk with
+other developers about code we need to collaborate on, pointing out, for
+example, how one class implements a &amp;ldquo;visitor pattern&amp;rdquo; in order to solve a
+problem. In this sense, knowing and studying design patterns is useful.&lt;/p&gt;
+
+&lt;p&gt;On the other hand, patterns are NOT a benchmark to measure how good some code
+is, and also not a menu of the proper ways to solve problems with software.
+First, they are obviously not an exhaustive list of all the possible valid ways
+to structure code. The original &amp;ldquo;Gang of Four&amp;rdquo; classic book lists 23 design
+patterns, but good design is clearly not about picking the right option out of
+these 23. Also, those patterns are heavily focused on Object Oriented design,
+which is just one possible programming discipline: in other contexts, like
+functional programming, most of those patterns do not have much meaning, while
+different patterns emerge.&lt;/p&gt;
+
+&lt;p&gt;Thinking in terms of patterns when designing code might even be limiting: it&amp;rsquo;s
+easy to end up &amp;ldquo;shoehorning&amp;rdquo; a solution into a pattern, and failing to recognize
+simpler solutions. Or worse, recognizing those simpler solutions, but still
+following the pattern for fear of judgement or to pass a code review.&lt;/p&gt;
+
+&lt;p&gt;In other words, patterns are names for structures that we often recognize in
+code. It&amp;rsquo;s good to explore them and to give them names, because that empowers us
+to communicate ideas. But they are not a menu of options, nor a benchmark to
+measure against. By all means study them, they will enrich your knowledge, but
+use them as tools, not as a limit on what can be done.&lt;/p&gt;
+
+&lt;h2&gt;Test Driven Development: a powerful tool, but still a tool&lt;/h2&gt;
+
+&lt;p&gt;Test Driven Development is a technique, the means to a goal. It&amp;rsquo;s a powerful and
+often counter-intuitive method that can guide us in the implementation of a
+solution. It is definitely not a mandatory way to write software, nor a
+necessary condition for good code.&lt;/p&gt;
+
+&lt;p&gt;Learning to write code test-first is not easy, and takes discipline, but it
+yields great benefits. It&amp;rsquo;s important for a well-rounded software developer to
+learn TDD, and mastering it can take years, but is well worth the effort. That
+said, tools are things that we &lt;em&gt;choose&lt;/em&gt; to use: we should not feel forced to
+adopt them in all cases.&lt;/p&gt;
+
+&lt;p&gt;TDD is especially good when one is faced with a problem that is well understood,
+even if the implementation can be tricky: it guides us through the
+implementation, helping us to move in little steps and to formalize what we
+intend to do in each iteration. Also, it ensures by nature that the code we
+produce is tested.&lt;/p&gt;
+
+&lt;p&gt;When uncertainty is high and the problem is not well understood yet, it&amp;rsquo;s often
+necessary to explore the problem space first, by implementing tentative
+solutions, or by researching and experimenting. In those cases, working in a
+strictly iterative way gets cumbersome and counter-productive, and it is
+perfectly reasonable to avoid TDD. Ultimately, you should make sure that you
+&lt;em&gt;can&lt;/em&gt; practice TDD, but if you find yourself hindered by it in a situation,
+don&amp;rsquo;t be ashamed to avoid it.&lt;/p&gt;
+
+&lt;p&gt;In most situations you should really make sure you write good tests: having good
+tests decreases the cost of changing your code, and makes it possible to
+collaborate and evolve the code base productively. But whether you should choose
+to write tests first or last depends on what is more conductive to good code and
+tests, in your specific case: TDD is often, but &lt;em&gt;not always&lt;/em&gt;, the answer.&lt;/p&gt;
+
+&lt;h2&gt;Conclusion: sharpen your tools, and mute non-constructive judgement&lt;/h2&gt;
+
+&lt;p&gt;In conclusion, TDD and Design Patterns (but also Pair Programming, OOD, DDD,
+Agile, etc.) are tools at your disposal. You should understand why they were
+conceived, and what issues they help to avoid. You should spend due time
+learning and mastering them, if you want to be a well-rounded software crafter.
+Still, once you know them well, remember to keep your critical thinking alert,
+and to retain the choice of which tools to use in each specific situation.&lt;/p&gt;
+
+&lt;p&gt;Unfortunately, these disciplines have often being misused as judgement criteria.
+One reason is that assuming that there is &amp;ldquo;One True Way™&amp;rdquo; to do things well
+makes the task of teaching and evaluating performance a lot easier (and
+sterile). Both in education and in professional settings, it&amp;rsquo;s often too
+tempting for teachers, recruiters, and supervisors to evaluate developers
+against a checklist. Moreover, communities are formed around practices, with the
+goal of promoting their adoption. Those communities tend to protect their
+identity from change, sometime forgetting the original motivation for the
+practice. That way, even genuinely good practices can get stretched outside
+their boundaries and become akin to cults. The antidote is to always demand to
+know &lt;em&gt;why&lt;/em&gt; something is better, without accepting tautological answers.&lt;/p&gt;
+
+&lt;p&gt;Our aim should be to master our art more and more every day, and for that we
+need our critical thinking well sharpened. The satisfaction and peace of mind
+that derives from a continuous pursue of mastery is a lot more valuable than the
+temporary reward of satisfying other people&amp;rsquo;s checklist of expectations, or of
+pledging our unconditionate belonging to an established group. Surrendering to
+peer pressure even when our best judgement suggests something different is a
+false relief.&lt;/p&gt;
+
+&lt;p&gt;This does not mean that you should disregard others&amp;rsquo; informed opinion, nor that
+your own judgement will always be correct. But if you have properly considered
+and understood the options, and you still think there&amp;rsquo;s a better way, then
+follow your intuition with an open mind. Either you will prove yourself right,
+or you will understand your mistake: in both cases you will have learned
+something.&lt;/p&gt;
+</content>
+    <summary type="html">&lt;p&gt;A software developer I know was recently faced with a problem: when practicing
+Test Driven Development (abbreviated as TDD), they felt that the resulting code
+tended not to follow design patterns. How can one achieve well structured code,
+that follows...&lt;/p&gt;</summary>
   </entry>
   <entry>
     <title>Delayed jobs with Rails and RabbitMQ</title>
@@ -57,14 +440,229 @@ considerations on the way software development is taught and practiced.&lt;/p&gt
     <author>
       <name>Luca Ongaro</name>
     </author>
-    <summary type="html">&lt;p&gt;I recently had the need to schedule background jobs with a specified delay into
+    <content type="html">&lt;p&gt;I recently had the need to schedule background jobs with a specified delay into
 the future from a Ruby on Rails application. I had to implement a retry
 mechanism with backoff, so I needed to be able to express something like
-“execute job X, but wait Y seconds before doing so”. Clearly, I needed this
+&amp;ldquo;execute job X, but wait Y seconds before doing so&amp;rdquo;. Clearly, I needed this
 mechanism to be non-blocking: if a job is scheduled 5 minutes in the future, the
 workers should be free to process other jobs in the meantime.&lt;/p&gt;
 
-&lt;p&gt;Some popular &lt;code&gt;ActiveJob&lt;/code&gt; adapters like Resque or Sidekiq…&lt;/p&gt;</summary>
+&lt;p&gt;Some popular &lt;code&gt;ActiveJob&lt;/code&gt; adapters like Resque or Sidekiq implement this feature,
+which is exposed in the &lt;code&gt;ActiveJob&lt;/code&gt; API as the &lt;code&gt;wait: &amp;lt;seconds&amp;gt;&lt;/code&gt; option:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="no"&gt;SomeJob&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;wait: &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;perform_later&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_argument&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;My adapter of choice though is &lt;a href="http://jondot.github.io/sneakers/"&gt;Sneakers&lt;/a&gt;,
+which is based on the superb &lt;a href="https://www.rabbitmq.com"&gt;RabbitMQ&lt;/a&gt;.
+Unfortunately, as of July 2018, the Sneakers adapter does not implement delayed
+jobs out of the box, as the feature table for &lt;code&gt;ActiveJob::QueueAdapters&lt;/code&gt;
+dutyfully reports (copied from the &lt;a href="https://api.rubyonrails.org/classes/ActiveJob/QueueAdapters.html"&gt;official
+docs&lt;/a&gt;):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight plaintext"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;|                   | Async | Queues | Delayed    | Priorities | Timeout | Retries |
+|-------------------|-------|--------|------------|------------|---------|---------|
+| Backburner        | Yes   | Yes    | Yes        | Yes        | Job     | Global  |
+| Delayed Job       | Yes   | Yes    | Yes        | Job        | Global  | Global  |
+| Qu                | Yes   | Yes    | No         | No         | No      | Global  |
+| Que               | Yes   | Yes    | Yes        | Job        | No      | Job     |
+| queue_classic     | Yes   | Yes    | Yes*       | No         | No      | No      |
+| Resque            | Yes   | Yes    | Yes (Gem)  | Queue      | Global  | Yes     |
+| Sidekiq           | Yes   | Yes    | Yes        | Queue      | No      | Job     |
+| Sneakers          | Yes   | Yes    | No         | Queue      | Queue   | No      |
+| Sucker Punch      | Yes   | Yes    | Yes        | No         | No      | No      |
+| Active Job Async  | Yes   | Yes    | Yes        | No         | No      | No      |
+| Active Job Inline | No    | Yes    | N/A        | N/A        | N/A     | N/A     |
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Sneakers and RabbitMQ are a perfect fit for my specific application: we leverage
+the highly available queues and versatile AMQP semantics for several use-cases,
+involving services written in other languages than Ruby. For example, our
+RabbitMQ exposes a MQTT frontend that collects metrics from our IoT devices, and
+makes it possible to implement several decoupled data processing pipelines,
+something cumbersome to implement with Rails-specific queuing mechanisms.
+Therefore, changing the queue backend just for this feature was not a desireable
+option: I decided to implement the missing feature instead, and I will show you
+how.&lt;/p&gt;
+
+&lt;p&gt;Luckily, there exists a well designed RabbitMQ plugin that does exactly what I
+needed, so I just had to write the adapter logic for it. The plugin is called
+&lt;a href="https://github.com/rabbitmq/rabbitmq-delayed-message-exchange"&gt;&lt;code&gt;rabbitmq_delayed_message_exchange&lt;/code&gt;&lt;/a&gt;,
+and can be easily added to an existing RabbitMQ installation by downloading
+the binary build, putting it into the plugins directory, and enabling it.&lt;/p&gt;
+
+&lt;p&gt;The plugin is well-documented and fairly straightforward to use, for those
+familiar with RabbitMQ and AMQP. In order to schedule delayed messages, one
+just has to:&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;Declare an exchange with type &lt;code&gt;x-delayed-message&lt;/code&gt;, and an extra
+ &lt;code&gt;x-delayed-type&lt;/code&gt; header to indicate the desired routing semantic to follow
+ after the delay elapses (like &amp;ldquo;direct&amp;rdquo;, or &amp;ldquo;topic&amp;rdquo;, etc.).&lt;/li&gt;
+&lt;li&gt;Publish messages on that exchange, providing an &lt;code&gt;x-delay&lt;/code&gt; header indicating
+ the desired delay in milliseconds.&lt;/li&gt;
+&lt;li&gt;Queues bound to the exchange will then receive the message after the given
+ delay elapses, and from this point on everything works according to the
+ standard AMQP protocol.&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;What was missing was only the integration between this plugin and our Rails +
+ActiveJob + Sneakers setup. Essentially, I needed to publish jobs that specify a
+delay on a &lt;code&gt;x-delayed-message&lt;/code&gt; exchange, setting the &lt;code&gt;x-delay&lt;/code&gt; header. Also, it
+was necessary to make sure that the delayed exchange actually exists, and that
+the queue on which we want to route the job is bound to it.&lt;/p&gt;
+
+&lt;p&gt;Here&amp;rsquo;s the code that I ended up writing. It re-defines the &lt;code&gt;enqueue_at&lt;/code&gt; method
+on the &lt;code&gt;SneakersAdapter&lt;/code&gt; (the original implementation just raises a
+&lt;code&gt;NotImplementedError&lt;/code&gt;, so augmenting the original class is a reasonable option
+here):&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="nb"&gt;require&lt;/span&gt; &lt;span class="s1"&gt;'sneakers'&lt;/span&gt;
+
+&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;Sneakers&lt;/span&gt;
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;DelayedJobSupport&lt;/span&gt;
+    &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;enqueue_at&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;timestamp&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+      &lt;span class="n"&gt;delay&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;timestamp&lt;/span&gt; &lt;span class="o"&gt;-&lt;/span&gt; &lt;span class="no"&gt;Time&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;current&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_f&lt;/span&gt;
+      &lt;span class="c1"&gt;# Just enqueue job if delay is zero or negative&lt;/span&gt;
+      &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="n"&gt;enqueue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="n"&gt;delay&lt;/span&gt; &lt;span class="o"&gt;&amp;lt;&lt;/span&gt; &lt;span class="mi"&gt;0&lt;/span&gt;
+
+      &lt;span class="c1"&gt;# Ensure queue is bound to the delayed message exchange&lt;/span&gt;
+      &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;class&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ensure_delayed_exchange_bound&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+      &lt;span class="c1"&gt;# Publish on the delayed message exchange&lt;/span&gt;
+      &lt;span class="nb"&gt;self&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;class&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;delayed_publisher&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;publish&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;
+        &lt;span class="no"&gt;ActiveSupport&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;JSON&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;encode&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;serialize&lt;/span&gt;&lt;span class="p"&gt;),&lt;/span&gt;
+        &lt;span class="ss"&gt;headers: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s1"&gt;'x-delay'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;delay&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;to_f&lt;/span&gt; &lt;span class="o"&gt;*&lt;/span&gt; &lt;span class="mi"&gt;1000&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;to_i&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+        &lt;span class="ss"&gt;routing_key: &lt;/span&gt;&lt;span class="n"&gt;job&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+
+    &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;ClassMethods&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;delayed_publisher&lt;/span&gt;
+        &lt;span class="vi"&gt;@delayed_publisher&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;Publisher&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;new&lt;/span&gt;&lt;span class="p"&gt;({&lt;/span&gt;
+          &lt;span class="ss"&gt;exchange: &lt;/span&gt;&lt;span class="s1"&gt;'delayed.exchange'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+          &lt;span class="ss"&gt;exchange_options: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt;
+            &lt;span class="ss"&gt;type: &lt;/span&gt;&lt;span class="s1"&gt;'x-delayed-message'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="ss"&gt;arguments: &lt;/span&gt;&lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="s1"&gt;'x-delayed-type'&lt;/span&gt; &lt;span class="o"&gt;=&amp;gt;&lt;/span&gt; &lt;span class="s1"&gt;'direct'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
+            &lt;span class="ss"&gt;durable: &lt;/span&gt;&lt;span class="kp"&gt;true&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt;
+            &lt;span class="ss"&gt;auto_delete: &lt;/span&gt;&lt;span class="kp"&gt;false&lt;/span&gt;
+          &lt;span class="p"&gt;}&lt;/span&gt;
+        &lt;span class="p"&gt;})&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+
+      &lt;span class="c1"&gt;# The first time a queue receives a delayed job, make sure&lt;/span&gt;
+      &lt;span class="c1"&gt;# that the queue is bound to the delayed message exchange&lt;/span&gt;
+      &lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;ensure_delayed_exchange_bound&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="vi"&gt;@bound_to_delayed_exchange&lt;/span&gt; &lt;span class="o"&gt;||=&lt;/span&gt; &lt;span class="p"&gt;{}&lt;/span&gt;
+        &lt;span class="k"&gt;return&lt;/span&gt; &lt;span class="kp"&gt;nil&lt;/span&gt; &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="vi"&gt;@bound_to_delayed_exchange&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;].&lt;/span&gt;&lt;span class="nf"&gt;present?&lt;/span&gt;
+        &lt;span class="n"&gt;delayed_publisher&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;ensure_connection!&lt;/span&gt;
+        &lt;span class="n"&gt;queue&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;delayed_publisher&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;channel&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;CONFIG&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="ss"&gt;:queue_options&lt;/span&gt;&lt;span class="p"&gt;])&lt;/span&gt;
+        &lt;span class="n"&gt;queue&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;bind&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;delayed_publisher&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;exchange&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="ss"&gt;routing_key: &lt;/span&gt;&lt;span class="n"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+        &lt;span class="vi"&gt;@bound_to_delayed_exchange&lt;/span&gt;&lt;span class="p"&gt;[&lt;/span&gt;&lt;span class="n"&gt;queue_name&lt;/span&gt;&lt;span class="p"&gt;]&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="kp"&gt;true&lt;/span&gt;
+      &lt;span class="k"&gt;end&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+
+&lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;ActiveJob&lt;/span&gt;
+  &lt;span class="k"&gt;module&lt;/span&gt; &lt;span class="nn"&gt;QueueAdapters&lt;/span&gt;
+    &lt;span class="k"&gt;class&lt;/span&gt; &lt;span class="nc"&gt;SneakersAdapter&lt;/span&gt;
+      &lt;span class="c1"&gt;# Add support for delayed jobs to SneakersAdapter&lt;/span&gt;
+      &lt;span class="kp"&gt;extend&lt;/span&gt; &lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;DelayedJobSupport&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;ClassMethods&lt;/span&gt;
+      &lt;span class="n"&gt;prepend&lt;/span&gt; &lt;span class="no"&gt;Sneakers&lt;/span&gt;&lt;span class="o"&gt;::&lt;/span&gt;&lt;span class="no"&gt;DelayedJobSupport&lt;/span&gt;
+    &lt;span class="k"&gt;end&lt;/span&gt;
+  &lt;span class="k"&gt;end&lt;/span&gt;
+&lt;span class="k"&gt;end&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;I can now schedule jobs with a given delay using the standard &lt;code&gt;wait: &amp;lt;seconds&amp;gt;&lt;/code&gt;
+or &lt;code&gt;wait_until: &amp;lt;timestamp&amp;gt;&lt;/code&gt; options:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre class="highlight ruby"&gt;&lt;code&gt;&lt;table class="rouge-table"&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td class="rouge-gutter gl"&gt;&lt;pre class="lineno"&gt;1
+2
+3
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="no"&gt;SomeJob&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;wait: &lt;/span&gt;&lt;span class="mi"&gt;5&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;perform_later&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_argument&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+
+&lt;span class="no"&gt;SomeJob&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;set&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="ss"&gt;wait_until: &lt;/span&gt;&lt;span class="mi"&gt;10&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;minutes&lt;/span&gt;&lt;span class="p"&gt;.&lt;/span&gt;&lt;span class="nf"&gt;from_now&lt;/span&gt;&lt;span class="p"&gt;).&lt;/span&gt;&lt;span class="nf"&gt;perform_later&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;some_argument&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;&lt;/table&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;h2&gt;Wrapping up&lt;/h2&gt;
+
+&lt;p&gt;RabbitMQ is an excellent messaging queue system (although merits and demerits,
+when speaking about technologies, are
+&lt;a href="/blog/2017/11/13/on-software-engineering-and-trade-offs.html"&gt;always contextual&lt;/a&gt;,
+so be skeptical of anyone saying &amp;ldquo;if you don&amp;rsquo;t use X, you&amp;rsquo;re doing it wrong&amp;rdquo;).
+Sneakers offers a nice adapter to use RabbitMQ as an &lt;code&gt;ActiveJob&lt;/code&gt; backend in
+Ruby on Rails. Unfortunately, it does not implement delayed jobs out of the
+box.&lt;/p&gt;
+
+&lt;p&gt;Luckily, with the help of a nice semi-official plugin, this feature is easy to
+implement, as shown in this post.&lt;/p&gt;
+</content>
+    <summary type="html">&lt;p&gt;I recently had the need to schedule background jobs with a specified delay into
+the future from a Ruby on Rails application. I had to implement a retry
+mechanism with backoff, so I needed to be able to express something like
+“execute job X, but wait...&lt;/p&gt;</summary>
   </entry>
   <entry>
     <title>On Engineering Software and Trade-Offs</title>
@@ -75,12 +673,185 @@ workers should be free to process other jobs in the meantime.&lt;/p&gt;
     <author>
       <name>Luca Ongaro</name>
     </author>
-    <summary type="html">&lt;p&gt;As software developers, we tend to be quite opinionated about our tools and
+    <content type="html">&lt;p&gt;As software developers, we tend to be quite opinionated about our tools and
 techniques. Our own specific education and experiences shape our preferences,
 and we often identify with several schools of thought. We might be, for example,
 advocates of functional programming, practitioners of test driven development,
 or microservices enthusiasts. On top of this, we all have our preferences when
 it comes to technology: our favorite programming languages, databases,
-infrastructure… These preferences shape…&lt;/p&gt;</summary>
+infrastructure… These preferences shape our identity as software developers,
+and exert a profound influence on the way we think: we view problems through
+those lenses, and determine the way we envision solutions.&lt;/p&gt;
+
+&lt;p&gt;On one hand, this is often a good thing: these disciplines provide us with a
+useful model of the programming reality and with ways to navigate it. On the
+other, strong beliefs might cause us to end up stuck defending our own stance,
+unable to see the merits of a different view point. It is not unusual to witness
+developers belonging to different schools of thought vehemently argue over some
+technical decision, each strenuously defending their own view of the
+(programming) World.&lt;/p&gt;
+
+&lt;p&gt;While there is nothing wrong in recognizing the merits of a technique and in
+adopting it, we should never forget one fundamental point: &lt;em&gt;pretty much every
+technical discipline or tool embodies a trade-off. Techniques and technologies
+are solutions to specific problems, and their merits or flaws are never
+absolute, but always bound to the context.&lt;/em&gt; Being aware of where these
+trade-offs lie is necessary not only to operate the right choices of tech, but
+also to maintain an open and flexible mind, capable of changing approach when
+necessary. Moreover, knowing where costs and benefits lie, provide us with the
+opportunity to innovate in ways that shift the trade-offs in a better direction.&lt;/p&gt;
+
+&lt;h2&gt;Static vs. Dynamic Typing&lt;/h2&gt;
+
+&lt;p&gt;One prominent example of something that many software developers hold strong
+opinions about, is statically versus dynamically typed languages. Advocates of
+static typing on one hand often maintain that strong typing is absolutely
+necessary for any serious project, while &amp;ndash; on the other hand &amp;ndash; users of
+dynamically typed languages regard static typing as a tedious and mostly
+unnecessary ceremony.&lt;/p&gt;
+
+&lt;p&gt;Despite these strong beliefs, evidence shows that both approaches can be
+extremely successful, ruling out a single objective winner of the diatribe. If
+dynamic typing cannot scale, how can we explain the existence of numerous large
+projects written in JavaScript, Python, Ruby, etc.? Let alone the immense
+success of C as a system programming language, which, while definitely not
+dynamically typed, can hardly be considered a strong type system. Equally, if it
+was true that static typing only hinders productivity and expressiveness, how
+could we account for the vast number of widely adopted strongly type languages,
+and their evident success on the field? The situation is not different if we
+turn our attention to demerits: no matter how opinionated we might be on one
+side or the other, we can at least agree that terrible code can be written in
+any practical language, no matter the type system.&lt;/p&gt;
+
+&lt;p&gt;Therefore, instead of adopting an absolute view point, let&amp;rsquo;s try to focus
+on the trade-offs of these two approaches. One way to look at it, is that static
+typing reduces the number of runtime errors, at the cost of requiring more
+effort to express solutions in code. Seen through these lenses, we can start
+appreciating how contextual the specific merits of both disciplines are. The
+cost of runtime errors is indeed vastly different for each specific application.&lt;/p&gt;
+
+&lt;p&gt;In a web application for example, &amp;ldquo;runtime&amp;rdquo; often means the development machine
+on which code is written, or the automated test environment. In a non-critical
+application adopting continuous delivery, even when the occasional bug slips to
+production, it can easily be reverted or patched with a new deployment. In these
+situations, favoring a language that makes it convenient to write automated
+tests, and shortens the test-code-deploy cycle, might often be the right choice.
+As a counter example, native mobile applications and embedded software follow
+release cycles that make it costly to deploy a fix to all users, if a runtime
+bug is discovered. In this cases, a strong type system can help catching defects
+and inconsistencies before it&amp;rsquo;s too late, and is worth some more effort to get
+our software to compile.&lt;/p&gt;
+
+&lt;p&gt;One objection to this line of reasoning could be that we should strive to
+minimize defects, no matter if they are more or less costly. That is of course
+true, but the point is that this minimization is subject to a cost structure,
+and the optimal solution depends on those costs. If that wasn&amp;rsquo;t the case, we
+would witness a world of absolutely bug-free software. The reality is quite
+different, and our job as engineers comes necessarily with a fair share of risk
+management considerations.&lt;/p&gt;
+
+&lt;p&gt;Of course there are other trade-offs at play, such as the extent to which IDEs
+can help us, versus the redundancy of the hints we have to give to compilers for
+them to help us catching inconsistencies. Again, the point is that being aware
+of them makes us better equipped to make informed decisions.&lt;/p&gt;
+
+&lt;p&gt;There are numerous examples of innovations on both sides that all rely on an
+awareness of these trade-offs and a conscious effort to improve on them. Type
+inference is an effort to reduce the additional effort of writing statically
+typed code, and got to the point that some static languages, like
+&lt;a href="https://crystal-lang.org/"&gt;Crystal&lt;/a&gt;, hardly require any type annotation at all.
+On the other hand, there are dynamic languages that add some static analysis
+capabilities to their toolbox, as seen in
+&lt;a href="http://erlang.org/doc/man/dialyzer.html"&gt;Dialyzer&lt;/a&gt; for Erlang and Elixir, or
+&lt;a href="https://flow.org/"&gt;Flow&lt;/a&gt; for JavaScript, making the static vs. dynamic typing
+distinction more like a gradient of possibilities than a binary choice.&lt;/p&gt;
+
+&lt;h2&gt;Microservices vs. Monolith&lt;/h2&gt;
+
+&lt;p&gt;Another example of a polarizing diatribe is microservices versus monolithic
+architectures. The term &amp;ldquo;monolith&amp;rdquo; is already subtly conveying an association
+with something old and clumsy, almost prehistoric, testifying how heated the
+debate is. Equally, the Internet is bubbling with examples of microservice
+architectures gone awry. But once again, let&amp;rsquo;s try to steer the conversation
+away from fruitless animosity by focusing on trade-offs of the respective
+solutions.&lt;/p&gt;
+
+&lt;p&gt;Microservices divide an application in separate and independent artifacts
+communicating with each other passing messages through standardized interfaces,
+usually (but not exclusively) implemented as HTTP APIs. As such, microservice
+architectures make it easier to evolve and improve at the level of the single
+service: as long as the interface stays the same, a service can be completely
+rewritten without the other services even noticing. On the other hand,
+microservices make the boundaries between services way more rigid: changing
+those boundaries requires careful coordination between different services, and
+often between different teams.&lt;/p&gt;
+
+&lt;p&gt;Depending on the life cycle of a project, and on how stable the functional
+boundaries are expected to be, this trade-off can change dramatically, making
+one approach or the other preferable or problematic. This dynamic is not
+exclusive of our industry: in management studies, this trade-off is known as
+modularity vs. integrality, and there are plenty of case studies showing how
+each approach has proved beneficial or detrimental to companies in different
+contexts.&lt;/p&gt;
+
+&lt;p&gt;Once again, being aware of these costs and benefits, makes it possible to
+consider the context in which we operate our decisions. Moreover, we often have
+the possibility to shift the balance or hedge the risks, for example by adopting
+a modular architecture even within a single service, or splitting our services
+only where boundaries are well known and stable.&lt;/p&gt;
+
+&lt;h2&gt;Distributed Systems vs. Centralized Systems&lt;/h2&gt;
+
+&lt;p&gt;One final example is distributed systems versus centralized ones. There has been
+a lot of innovation in the field of distributed systems in recent years, and we
+have witnessed a proliferation of new decentralized solutions dealing with
+storage, configuration management, messaging queues, and more. Proponents of
+this approach outline the benefits of distribution when it comes to scaling and
+resilience, but the wave of innovation brought also a certain disdain for
+centralized solutions.&lt;/p&gt;
+
+&lt;p&gt;Distributed systems are a welcome addition to our choice of technologies, but
+once again, their advantages do not come without a cost. A distributed system
+reduces the chances of a failure of the whole system, at the cost of having to
+run and coordinate several nodes, therefore incurring in some overhead, and
+increasing the chances that any single node will fail, requiring intervention.
+This might seem like a reasonable trade-off to accept, but there are products or
+teams where an occasional short downtime is more acceptable than a sustained
+higher effort on operations.&lt;/p&gt;
+
+&lt;p&gt;A centralized system is harder to scale, but on the other hand it is not
+susceptible to network partitions, hence it is not subject to the &lt;a href="https://en.wikipedia.org/wiki/CAP_theorem"&gt;CAP
+theorem&lt;/a&gt; and can be at the same time
+available and consistent. Therefore, depending on the scale and requirements of
+a particular project, different approaches are preferable.&lt;/p&gt;
+
+&lt;p&gt;By keeping this trade-off in mind, and by knowing the specific context and
+requirements of a project, we are able to make informed decisions, and to
+consciously mitigate the risks that come with our technology of choice.
+Furthermore, centralized systems can be backed-up and replicated, and
+distributed systems can alleviate the operational burden by automating some
+operations, and by adopting an application design that takes into consideration
+from the beginning the limits of the system, when it comes to consistency or
+availability.&lt;/p&gt;
+
+&lt;h2&gt;Conclusions&lt;/h2&gt;
+
+&lt;p&gt;In conclusion, the software development universe is full of polarizing
+dichotomies, and engineers often have strong opinions: functional programming
+versus object orientation, client-side versus server-side rendering, performance
+versus maintainability, and so on. Experience should teach us that in each of
+those dichotomies lies a trade-off, as well as different boundaries of
+applicability. Reflecting on costs and benefits helps us keeping a flexible mind
+and recognizing opportunities to adopt different strategies. Reminding ourselves
+that every solution is contextual and never absolute is an exercise of
+intellectual honesty, if we strive to be well-rounded engineers. Finally,
+focusing on trade-offs and context, rather than on position and beliefs, makes
+technical discussions a lot more enjoyable and less prone to end with an
+impasse.&lt;/p&gt;
+</content>
+    <summary type="html">&lt;p&gt;As software developers, we tend to be quite opinionated about our tools and
+techniques. Our own specific education and experiences shape our preferences,
+and we often identify with several schools of thought. We might be, for example,
+advocates of...&lt;/p&gt;</summary>
   </entry>
 </feed>
