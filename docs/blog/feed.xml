@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-02-01T16:35:17+01:00</updated>
+    <updated>2019-02-01T18:50:15+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
@@ -108,7 +108,7 @@ options:&lt;/p&gt;
 
 &lt;iframe src='https://lucaong.github.io/minisearch/examples/'
 style='border: none; background: #fafafa; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
-border-radius: 5px; width: 100%; height: 440px; margin: 1em 0;'&gt;&lt;/iframe&gt;
+border-radius: 5px; width: 100%; height: 440px; margin: 0 0 1.81em 0;'&gt;&lt;/iframe&gt;
 
 &lt;p&gt;As can be tested in the demo, the &lt;strong&gt;~5000 songs&lt;/strong&gt; are indexed client-side upon
 each page load in a fraction of a second, and the search happens in &lt;strong&gt;real
