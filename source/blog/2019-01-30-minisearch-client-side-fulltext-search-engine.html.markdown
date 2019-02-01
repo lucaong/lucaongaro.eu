@@ -188,21 +188,22 @@ feature sets.
 **Fuse.js** is optimized for smaller collections of documents: it uses the
 [Bitap algorithm](https://en.wikipedia.org/wiki/Bitap_algorithm), that provides
 good fuzzy matching, but iterates through the whole collection of documents upon
-each search. For this reason it was not ideal for my use case, where I could
-easily have several thousand documents to search among.
+each search. For this reason it is not ideal for my use case, where Fuse.js
+incurs in a noticeable delay. Despite this shortcoming, for small collections
+Fuse.js works quite well and is easy to use.
 
-**Lunr.js** is probably the most similar library. It is well implemented, and
-uses an approach which is quite similar to MiniSearch. The project is well
-maintained, and I can definitely recommend it, having used it in some projects
-already before switching to MiniSearch. The main differences with MiniSearch are
-the following:
+**Lunr.js** is probably the most similar library. Its implementation is quite
+similar to MiniSearch, and it performs similarily. The project is well
+maintained, and I can definitely recommend it, having used it in several
+projects before switching to MiniSearch. The main differences with MiniSearch
+are the following:
 
   1. MiniSearch index takes **sensibly less space** than Lunr's one. On my
-     applications, it typically uses 40% of the space used by Lunr, for the same
-     collection. This was one of the main design goals of MiniSearch, to support
-     memory-constrained cases like mobile apps. That said, Lunr is already quite
-     space optimized, so for many use cases this difference won't be too
-     important.
+     applications, MiniSearch typically uses less than half of the space used by
+     Lunr, for the same collection. This was one of the main design goals of
+     MiniSearch, in order to support memory-constrained cases like mobile apps.
+     That said, Lunr is already quite space optimized, so for many use cases
+     this difference won't be too important.
   2. Lunr comes with **stemming and language support**. MiniSearch provides the
      facilities to add those, but does not provide them out of the box.
      Stemming and language support are useful features, but they are often not
@@ -212,8 +213,8 @@ the following:
      That said, if you know you need them, Lunr might be an easier choice.
   3. Lunr index cannot be changed after creation. MiniSearch instead makes it
      possible to **add and remove documents** to the index at any moment. If
-     documents in your collection are subject to change while the app is in use,
-     then MiniSearch makes it possible to index just the changes, instead of
+     documents in your collection can be edited by the user, then MiniSearch
+     makes it possible to index just the documents that change, instead of
      re-indexing the whole collection.
   4. Lunr provides an **advanced query language** that can express some queries
      that are currently not possible in MiniSearch. For example, Lunr can search
@@ -236,12 +237,13 @@ I hope I managed to give a good enough introduction to client-side full-text
 search, its pros and cons, and the design decisions behind **MiniSearch**. I had
 quite some fun implementing this library, and I am happy to see it used in
 production by now on way more use cases than I initially forecasted. It was also
-a teachful experience to delve through the code of other similar libraries: each
-of them came to some different interesting solution to the tricky problem of
+a teachful experience to delve through the code of other similar projects: each
+of them came to different interesting solutions to the tricky problem of
 implementing efficient client-side full-text search.
 
-If you are considering to adopt MiniSearch for a project, you might want to read
-through the [documentation](https://lucaong.github.io/minisearch/) and the [API
+If you are considering to adopt MiniSearch for a project, more detailed
+information is available in the
+[documentation](https://lucaong.github.io/minisearch/) and the [API
 reference](https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html).
 MiniSearch is open-source software, and contributions to its code and
 documentation are more than welcome!
