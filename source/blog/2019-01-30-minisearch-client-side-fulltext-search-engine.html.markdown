@@ -101,10 +101,11 @@ as the user types.
 Of course, there are limits to how big a collection of documents can be in order
 to fit in the browser memory, but these limits are **surprisingly high**,
 especially when using the right data structures. Some use cases that are served
-well by client-side search are, for example, a product search for a medium-sized
-online shop, search through a blog, or in an address book. Proper full-text
-search can give a much better user experience compared to a crude text
-comparison or regular expression search.
+well by client-side search are, for example, product search for a medium-sized
+online shop, search through a blog, or address book search. Proper full-text
+search can give a much better user experience compared to a crude string
+comparison or regular expression search, due to better ranking of results and
+handling of mispelled terms.
 
 ## Implementing the index
 
@@ -112,9 +113,9 @@ As a rough calculation, if we have 5000 documents to search amongst, and each
 document is on average 200 characters long (either documents are small, or we
 are only iterested in searching by title, or within a small description), then
 storing all the documents in uncompressed form takes roughly 2MB (JavaScript
-strings are typically stored using 2 bytes per character). Now, 2MB is of the
-same order of dimension of a good quality image, and usually more than
-acceptable to store in memory.
+strings are typically stored using 2 bytes per character). That is more or less
+the size of a good quality image, and usually more than acceptable to store in
+memory.
 
 There is one problem with this calculation though: it is only taking into
 account the size of the raw documents, not of the search index data. Typical
