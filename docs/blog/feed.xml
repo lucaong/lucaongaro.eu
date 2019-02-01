@@ -301,14 +301,14 @@ documentation are more than welcome!&lt;/p&gt;
     <link rel="alternate" href="https://lucaongaro.eu/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html"/>
     <id>https://lucaongaro.eu/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html</id>
     <published>2018-09-19T16:03:00+02:00</published>
-    <updated>2018-09-19T20:54:54+02:00</updated>
+    <updated>2019-02-01T17:53:47+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
-    <content type="html">&lt;p&gt;I recently got asked for my opinion regarding an issue that a developer was
-facing: when practicing Test Driven Development (abbreviated as TDD), they feel
-that the resulting code tends not to follow design patterns. How can one achieve
-well structured code, that follows the Design Patterns, through TDD?&lt;/p&gt;
+    <content type="html">&lt;p&gt;A software developer I know was recently faced with a problem: when practicing
+Test Driven Development (abbreviated as TDD), they felt that the resulting code
+tended not to follow design patterns. How can one achieve well structured code,
+that follows the Design Patterns, through TDD?&lt;/p&gt;
 
 &lt;p&gt;I feel that this is an interesting question, because it uncovers some important
 considerations on the way software development is taught and practiced.&lt;/p&gt;
