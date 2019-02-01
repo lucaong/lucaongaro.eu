@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-02-01T16:17:44+01:00</updated>
+    <updated>2019-02-01T16:35:17+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
@@ -146,10 +146,11 @@ as the user types.&lt;/p&gt;
 &lt;p&gt;Of course, there are limits to how big a collection of documents can be in order
 to fit in the browser memory, but these limits are &lt;strong&gt;surprisingly high&lt;/strong&gt;,
 especially when using the right data structures. Some use cases that are served
-well by client-side search are, for example, a product search for a medium-sized
-online shop, search through a blog, or in an address book. Proper full-text
-search can give a much better user experience compared to a crude text
-comparison or regular expression search.&lt;/p&gt;
+well by client-side search are, for example, product search for a medium-sized
+online shop, search through a blog, or address book search. Proper full-text
+search can give a much better user experience compared to a crude string
+comparison or regular expression search, due to better ranking of results and
+handling of mispelled terms.&lt;/p&gt;
 
 &lt;h2&gt;Implementing the index&lt;/h2&gt;
 
@@ -157,9 +158,9 @@ comparison or regular expression search.&lt;/p&gt;
 document is on average 200 characters long (either documents are small, or we
 are only iterested in searching by title, or within a small description), then
 storing all the documents in uncompressed form takes roughly 2MB (JavaScript
-strings are typically stored using 2 bytes per character). Now, 2MB is of the
-same order of dimension of a good quality image, and usually more than
-acceptable to store in memory.&lt;/p&gt;
+strings are typically stored using 2 bytes per character). That is more or less
+the size of a good quality image, and usually more than acceptable to store in
+memory.&lt;/p&gt;
 
 &lt;p&gt;There is one problem with this calculation though: it is only taking into
 account the size of the raw documents, not of the search index data. Typical
