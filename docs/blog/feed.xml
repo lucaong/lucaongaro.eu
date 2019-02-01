@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Blog Name</title>
-  <subtitle>Blog subtitle</subtitle>
-  <id>http://blog.url.com/blog</id>
-  <link href="http://blog.url.com/blog"/>
-  <link href="http://blog.url.com/blog/feed.xml" rel="self"/>
+  <title>Luca Ongaro's blog</title>
+  <subtitle>Programming, engineering, and some science too</subtitle>
+  <id>https://lucaongaro.eu/blog</id>
+  <link href="https://lucaongaro.eu/blog"/>
+  <link href="https://lucaongaro.eu/blog/feed.xml" rel="self"/>
   <updated>2019-01-30T16:08:00+01:00</updated>
   <author>
-    <name>Blog Author</name>
+    <name>Luca Ongaro</name>
   </author>
   <entry>
     <title>MiniSearch, a client-side full-text search engine</title>
-    <link rel="alternate" href="http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
-    <id>http://blog.url.com/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
+    <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
+    <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-01-31T18:54:35+01:00</updated>
+    <updated>2019-02-01T16:17:44+01:00</updated>
     <author>
-      <name>Article Author</name>
+      <name>Luca Ongaro</name>
     </author>
     <content type="html">&lt;p&gt;This blog post is to introduce
 &lt;a href="https://github.com/lucaong/minisearch"&gt;MiniSearch&lt;/a&gt;, a JavaScript library that
@@ -130,7 +130,7 @@ would be the obvious choice. The challenge though, was to make search as fast as
 possible, but also resilient to spotty Internet connections on users&amp;rsquo;
 smartphones. I started to think whether it would make sense to implement the
 search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might sound a bit
-unorthodox, but if possible at all, it would have given us several advantages.&lt;/p&gt;
+unorthodox, but it would have given us several advantages.&lt;/p&gt;
 
 &lt;p&gt;First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -139,27 +139,26 @@ be no need to setup and run a search server, making the architecture simpler.
 Running the search engine client-side is also &lt;strong&gt;inherently scalable&lt;/strong&gt;: no
 additional load is placed on the server when more users access the platform, as
 each of them is running their own instance of the search engine in their
-browser. Finally, if the implementation is efficient, search can be made much
-faster, as network latency is eliminated entirely, so results can be computed in
-real time as the user types.&lt;/p&gt;
+browser. Finally, with a good implementation, search can be made much faster, as
+network latency is eliminated entirely, and results can be computed in real time
+as the user types.&lt;/p&gt;
 
 &lt;p&gt;Of course, there are limits to how big a collection of documents can be in order
-to fit in the browser memory, but with a good implementation these limits are
-&lt;strong&gt;surprisingly high&lt;/strong&gt;. This enables interesting use cases, like searching within
-a mobile application, or through an address book, in ways that yield much better
-results than a crude search with a regular expression.&lt;/p&gt;
+to fit in the browser memory, but these limits are &lt;strong&gt;surprisingly high&lt;/strong&gt;,
+especially when using the right data structures. Some use cases that are served
+well by client-side search are, for example, a product search for a medium-sized
+online shop, search through a blog, or in an address book. Proper full-text
+search can give a much better user experience compared to a crude text
+comparison or regular expression search.&lt;/p&gt;
 
 &lt;h2&gt;Implementing the index&lt;/h2&gt;
 
-&lt;p&gt;Is it really possible to efficiently index and store thousands of documents in
-the browser memory? As it turns out, if the index is implemented in a space
-efficient way, and the documents to store are not too large, &lt;strong&gt;the answer is
-yes&lt;/strong&gt;. As a rough calculation, if we have 5000 documents to search amongst, and
-each document is on average 200 characters long (either documents are small, or
-we are only iterested in searching by title, or within a small description),
-then storing all the documents in uncompressed form takes roughly 2MB
-(JavaScript strings are typically stored using 2 bytes per character). Now, 2MB
-is of the same order of dimension of a good quality image, and usually more than
+&lt;p&gt;As a rough calculation, if we have 5000 documents to search amongst, and each
+document is on average 200 characters long (either documents are small, or we
+are only iterested in searching by title, or within a small description), then
+storing all the documents in uncompressed form takes roughly 2MB (JavaScript
+strings are typically stored using 2 bytes per character). Now, 2MB is of the
+same order of dimension of a good quality image, and usually more than
 acceptable to store in memory.&lt;/p&gt;
 
 &lt;p&gt;There is one problem with this calculation though: it is only taking into
@@ -198,21 +197,19 @@ constrained inverted index because:&lt;/p&gt;
  take a lot more space.&lt;/li&gt;
 &lt;/ol&gt;
 
-&lt;p&gt;Implementing a radix tree in JavaScript is not trivial, but with some patience
-and a good amount of testing it is well worth (and also quite enjoyable if you
-are a data structures enthusiast like me). The radix tree implementation ended
-up taking &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js"&gt;less than 300 lines of
-code&lt;/a&gt;,
-and is &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.test.js"&gt;thoroughfully
-tested&lt;/a&gt;,
-including some generative &lt;strong&gt;property based tests&lt;/strong&gt;, that I find especially
-valuable in algorithmic code in order to discover unforeseen corner cases.&lt;/p&gt;
+&lt;p&gt;Implementing a radix tree in JavaScript takes a little patience, but with a good
+amount of testing &lt;a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js"&gt;it is not
+difficult&lt;/a&gt;
+(and can be quite enjoyable if you are a data structure enthusiast like me).
+Along with the necessary unit tests, I find especially valuable in algorithmic
+code to add some generative &lt;strong&gt;property based tests&lt;/strong&gt;, to discover unforeseen
+corner cases.&lt;/p&gt;
 
-&lt;p&gt;Building on the robust foundations of the radix tree implementation, the search
-engine itself was mostly a matter of building up the index in a way that
-supports all the planned features (boosting, search in a specific field, etc.),
-and following well researched ranking algorithms like
-&lt;a href="https://en.wikipedia.org/wiki/Tf–idf"&gt;Tf-Idf&lt;/a&gt;. The most complicated part was
+&lt;p&gt;Building on the foundations of a well-tested radix tree implementation, the
+search engine is mostly a matter of building up the index in a way that supports
+all the planned features (boosting, search in a specific field, etc.), and
+following well researched ranking algorithms like
+&lt;a href="https://en.wikipedia.org/wiki/Tf–idf"&gt;Tf-Idf&lt;/a&gt;. The most complex part was
 implementing fuzzy search, which is done by traversing the radix tree while
 maintaining a &amp;ldquo;budget&amp;rdquo; of edits: if we are looking for the word &amp;ldquo;color&amp;rdquo; within
 an edit distance of 2, we will find &amp;ldquo;colour&amp;rdquo; (edit distance 1), and &amp;ldquo;connor&amp;rdquo;
@@ -242,67 +239,70 @@ easily have several thousand documents to search among.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;Lunr.js&lt;/strong&gt; is probably the most similar library. It is well implemented, and
 uses an approach which is quite similar to MiniSearch. The project is well
-maintained, and I can definitely recommend it (I also contributed a pull request
-to the library, and the maintainer is nice and responsive). The notable
-differences with MiniSearch are the following:&lt;/p&gt;
+maintained, and I can definitely recommend it, having used it in some projects
+already before switching to MiniSearch. The main differences with MiniSearch are
+the following:&lt;/p&gt;
 
 &lt;ol&gt;
 &lt;li&gt;MiniSearch index takes &lt;strong&gt;sensibly less space&lt;/strong&gt; than Lunr&amp;rsquo;s one. On my
- applications, it typically uses up 40% of the space used by Lunr, for the
- same collection. This was one of the main design goals of MiniSearch, to
- support memory-constrained cases like mobile apps. That said, Lunr is
- already quite space optimized, so for many use cases this difference won&amp;rsquo;t
- be too important.&lt;/li&gt;
+ applications, it typically uses 40% of the space used by Lunr, for the same
+ collection. This was one of the main design goals of MiniSearch, to support
+ memory-constrained cases like mobile apps. That said, Lunr is already quite
+ space optimized, so for many use cases this difference won&amp;rsquo;t be too
+ important.&lt;/li&gt;
 &lt;li&gt;Lunr comes with &lt;strong&gt;stemming and language support&lt;/strong&gt;. MiniSearch provides the
  facilities to add those, but does not provide them out of the box.
  Stemming and language support are useful features, but they are often not
- needed, make the library bigger, and can lead to confusing results. For
- these reasons, I chose to leave them out of scope for MiniSearch, and
- explain instead in the docs how to add them, if needed. That said, if you
- know you need them, Lunr might be an easier choice.&lt;/li&gt;
+ needed, make the library bigger, and can sometimes lead to unexpected
+ results. For these reasons, I chose to leave them out of scope for
+ MiniSearch, and explain instead in the docs how to add them, if needed.
+ That said, if you know you need them, Lunr might be an easier choice.&lt;/li&gt;
 &lt;li&gt;Lunr index cannot be changed after creation. MiniSearch instead makes it
  possible to &lt;strong&gt;add and remove documents&lt;/strong&gt; to the index at any moment. If
- dynamic updates to the index are necessary (that was my case), then
- MiniSearch can be a good option.&lt;/li&gt;
+ documents in your collection are subject to change while the app is in use,
+ then MiniSearch makes it possible to index just the changes, instead of
+ re-indexing the whole collection.&lt;/li&gt;
 &lt;li&gt;Lunr provides an &lt;strong&gt;advanced query language&lt;/strong&gt; that can express some queries
- that are not possible in MiniSearch (for example, searching for terms that
- start with &amp;ldquo;uni&amp;rdquo; and end with &amp;ldquo;ty&amp;rdquo;, like &amp;ldquo;unity&amp;rdquo; and &amp;ldquo;university&amp;rdquo;). On the
- other hand, if you do not need those, you might find MiniSearch API simpler
- to use.&lt;/li&gt;
-&lt;li&gt;MiniSearch offers &lt;strong&gt;auto-suggestions&lt;/strong&gt; out of the box, to complete partial
- queries. For example, for the partial search &amp;ldquo;uni&amp;rdquo;, it can suggest
+ that are currently not possible in MiniSearch. For example, Lunr can search
+ for terms that start with &amp;ldquo;uni&amp;rdquo; and end with &amp;ldquo;ty&amp;rdquo;, but have any character
+ in the middle, like &amp;ldquo;unity&amp;rdquo; and &amp;ldquo;university&amp;rdquo;. On the other hand, if you do
+ not need those, you might find MiniSearch API simpler to use.&lt;/li&gt;
+&lt;li&gt;MiniSearch offers an &lt;strong&gt;auto-suggestion&lt;/strong&gt; feature out of the box. For
+ example, for the partial search &amp;ldquo;uni&amp;rdquo;, MiniSearch could suggest
  &amp;ldquo;university&amp;rdquo;, &amp;ldquo;unicorn&amp;rdquo;, etc. The suggestions are calculated on the actual
- documents, and ranked by relevance. This can be used to implement
+ documents, and sorted by relevance. This feature can be used to implement
  auto-completion, like in the demo application shown above. Lunr does not
  currently offer this feature.&lt;/li&gt;
 &lt;/ol&gt;
 
 &lt;p&gt;Notably, MiniSearch, Lunr, and Fuse.js all come with zero runtime dependencies,
-which is quite a good surprise for a JavaScript package!&lt;/p&gt;
+which is quite a good surprise for JavaScript packages!&lt;/p&gt;
 
 &lt;h2&gt;Conclusion&lt;/h2&gt;
 
 &lt;p&gt;I hope I managed to give a good enough introduction to client-side full-text
-search, its advantages and disadvantages, and the design decisions behind
-&lt;strong&gt;MiniSearch&lt;/strong&gt;. I had quite some fun implementing this library, and it is by now
-successfully used in production on way more use cases than I initially
-forecasted. It was also a nice experience to read through other implementations,
-and contribute to them: it is interesting how each library came to some
-different ingenious solution to this tricky problem.&lt;/p&gt;
+search, its pros and cons, and the design decisions behind &lt;strong&gt;MiniSearch&lt;/strong&gt;. I had
+quite some fun implementing this library, and I am happy to see it used in
+production by now on way more use cases than I initially forecasted. It was also
+a teachful experience to delve through the code of other similar libraries: each
+of them came to some different interesting solution to the tricky problem of
+implementing efficient client-side full-text search.&lt;/p&gt;
 
 &lt;p&gt;If you are considering to adopt MiniSearch for a project, you might want to read
 through the &lt;a href="https://lucaong.github.io/minisearch/"&gt;documentation&lt;/a&gt; and the &lt;a href="https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html"&gt;API
-reference&lt;/a&gt;.&lt;/p&gt;
+reference&lt;/a&gt;.
+MiniSearch is open-source software, and contributions to its code and
+documentation are more than welcome!&lt;/p&gt;
 </content>
   </entry>
   <entry>
     <title>Adopting best practices without being adopted by them</title>
-    <link rel="alternate" href="http://blog.url.com/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html"/>
-    <id>http://blog.url.com/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html</id>
+    <link rel="alternate" href="https://lucaongaro.eu/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html"/>
+    <id>https://lucaongaro.eu/blog/2018/09/19/adopting-best-practices-without-being-adoopted.html</id>
     <published>2018-09-19T16:03:00+02:00</published>
     <updated>2018-09-19T20:54:54+02:00</updated>
     <author>
-      <name>Article Author</name>
+      <name>Luca Ongaro</name>
     </author>
     <content type="html">&lt;p&gt;I recently got asked for my opinion regarding an issue that a developer was
 facing: when practicing Test Driven Development (abbreviated as TDD), they feel
@@ -423,12 +423,12 @@ something.&lt;/p&gt;
   </entry>
   <entry>
     <title>Delayed jobs with Rails and RabbitMQ</title>
-    <link rel="alternate" href="http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html"/>
-    <id>http://blog.url.com/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html</id>
+    <link rel="alternate" href="https://lucaongaro.eu/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html"/>
+    <id>https://lucaongaro.eu/blog/2018/07/31/delayed-jobs-with-rails-and-rabbitmq.html</id>
     <published>2018-07-31T15:34:00+02:00</published>
     <updated>2018-08-07T16:16:49+02:00</updated>
     <author>
-      <name>Article Author</name>
+      <name>Luca Ongaro</name>
     </author>
     <content type="html">&lt;p&gt;I recently had the need to schedule background jobs with a specified delay into
 the future from a Ruby on Rails application. I had to implement a retry
@@ -652,12 +652,12 @@ implement, as shown in this post.&lt;/p&gt;
   </entry>
   <entry>
     <title>On Engineering Software and Trade-Offs</title>
-    <link rel="alternate" href="http://blog.url.com/blog/2017/11/13/on-software-engineering-and-trade-offs.html"/>
-    <id>http://blog.url.com/blog/2017/11/13/on-software-engineering-and-trade-offs.html</id>
+    <link rel="alternate" href="https://lucaongaro.eu/blog/2017/11/13/on-software-engineering-and-trade-offs.html"/>
+    <id>https://lucaongaro.eu/blog/2017/11/13/on-software-engineering-and-trade-offs.html</id>
     <published>2017-11-13T14:36:00+01:00</published>
     <updated>2018-08-01T12:47:43+02:00</updated>
     <author>
-      <name>Article Author</name>
+      <name>Luca Ongaro</name>
     </author>
     <content type="html">&lt;p&gt;As software developers, we tend to be quite opinionated about our tools and
 techniques. Our own specific education and experiences shape our preferences,

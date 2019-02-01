@@ -170,7 +170,7 @@ would be the obvious choice. The challenge though, was to make search as fast as
 possible, but also resilient to spotty Internet connections on users&rsquo;
 smartphones. I started to think whether it would make sense to implement the
 search index <strong>client-side instead of server-side</strong>: it might sound a bit
-unorthodox, but if possible at all, it would have given us several advantages.</p>
+unorthodox, but it would have given us several advantages.</p>
 
 <p>First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -179,27 +179,26 @@ be no need to setup and run a search server, making the architecture simpler.
 Running the search engine client-side is also <strong>inherently scalable</strong>: no
 additional load is placed on the server when more users access the platform, as
 each of them is running their own instance of the search engine in their
-browser. Finally, if the implementation is efficient, search can be made much
-faster, as network latency is eliminated entirely, so results can be computed in
-real time as the user types.</p>
+browser. Finally, with a good implementation, search can be made much faster, as
+network latency is eliminated entirely, and results can be computed in real time
+as the user types.</p>
 
 <p>Of course, there are limits to how big a collection of documents can be in order
-to fit in the browser memory, but with a good implementation these limits are
-<strong>surprisingly high</strong>. This enables interesting use cases, like searching within
-a mobile application, or through an address book, in ways that yield much better
-results than a crude search with a regular expression.</p>
+to fit in the browser memory, but these limits are <strong>surprisingly high</strong>,
+especially when using the right data structures. Some use cases that are served
+well by client-side search are, for example, a product search for a medium-sized
+online shop, search through a blog, or in an address book. Proper full-text
+search can give a much better user experience compared to a crude text
+comparison or regular expression search.</p>
 
 <h2>Implementing the index</h2>
 
-<p>Is it really possible to efficiently index and store thousands of documents in
-the browser memory? As it turns out, if the index is implemented in a space
-efficient way, and the documents to store are not too large, <strong>the answer is
-yes</strong>. As a rough calculation, if we have 5000 documents to search amongst, and
-each document is on average 200 characters long (either documents are small, or
-we are only iterested in searching by title, or within a small description),
-then storing all the documents in uncompressed form takes roughly 2MB
-(JavaScript strings are typically stored using 2 bytes per character). Now, 2MB
-is of the same order of dimension of a good quality image, and usually more than
+<p>As a rough calculation, if we have 5000 documents to search amongst, and each
+document is on average 200 characters long (either documents are small, or we
+are only iterested in searching by title, or within a small description), then
+storing all the documents in uncompressed form takes roughly 2MB (JavaScript
+strings are typically stored using 2 bytes per character). Now, 2MB is of the
+same order of dimension of a good quality image, and usually more than
 acceptable to store in memory.</p>
 
 <p>There is one problem with this calculation though: it is only taking into
@@ -238,21 +237,19 @@ constrained inverted index because:</p>
  take a lot more space.</li>
 </ol>
 
-<p>Implementing a radix tree in JavaScript is not trivial, but with some patience
-and a good amount of testing it is well worth (and also quite enjoyable if you
-are a data structures enthusiast like me). The radix tree implementation ended
-up taking <a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js">less than 300 lines of
-code</a>,
-and is <a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.test.js">thoroughfully
-tested</a>,
-including some generative <strong>property based tests</strong>, that I find especially
-valuable in algorithmic code in order to discover unforeseen corner cases.</p>
+<p>Implementing a radix tree in JavaScript takes a little patience, but with a good
+amount of testing <a href="https://github.com/lucaong/minisearch/blob/master/src/SearchableMap/SearchableMap.js">it is not
+difficult</a>
+(and can be quite enjoyable if you are a data structure enthusiast like me).
+Along with the necessary unit tests, I find especially valuable in algorithmic
+code to add some generative <strong>property based tests</strong>, to discover unforeseen
+corner cases.</p>
 
-<p>Building on the robust foundations of the radix tree implementation, the search
-engine itself was mostly a matter of building up the index in a way that
-supports all the planned features (boosting, search in a specific field, etc.),
-and following well researched ranking algorithms like
-<a href="https://en.wikipedia.org/wiki/Tf–idf">Tf-Idf</a>. The most complicated part was
+<p>Building on the foundations of a well-tested radix tree implementation, the
+search engine is mostly a matter of building up the index in a way that supports
+all the planned features (boosting, search in a specific field, etc.), and
+following well researched ranking algorithms like
+<a href="https://en.wikipedia.org/wiki/Tf–idf">Tf-Idf</a>. The most complex part was
 implementing fuzzy search, which is done by traversing the radix tree while
 maintaining a &ldquo;budget&rdquo; of edits: if we are looking for the word &ldquo;color&rdquo; within
 an edit distance of 2, we will find &ldquo;colour&rdquo; (edit distance 1), and &ldquo;connor&rdquo;
@@ -282,57 +279,60 @@ easily have several thousand documents to search among.</p>
 
 <p><strong>Lunr.js</strong> is probably the most similar library. It is well implemented, and
 uses an approach which is quite similar to MiniSearch. The project is well
-maintained, and I can definitely recommend it (I also contributed a pull request
-to the library, and the maintainer is nice and responsive). The notable
-differences with MiniSearch are the following:</p>
+maintained, and I can definitely recommend it, having used it in some projects
+already before switching to MiniSearch. The main differences with MiniSearch are
+the following:</p>
 
 <ol>
 <li>MiniSearch index takes <strong>sensibly less space</strong> than Lunr&rsquo;s one. On my
- applications, it typically uses up 40% of the space used by Lunr, for the
- same collection. This was one of the main design goals of MiniSearch, to
- support memory-constrained cases like mobile apps. That said, Lunr is
- already quite space optimized, so for many use cases this difference won&rsquo;t
- be too important.</li>
+ applications, it typically uses 40% of the space used by Lunr, for the same
+ collection. This was one of the main design goals of MiniSearch, to support
+ memory-constrained cases like mobile apps. That said, Lunr is already quite
+ space optimized, so for many use cases this difference won&rsquo;t be too
+ important.</li>
 <li>Lunr comes with <strong>stemming and language support</strong>. MiniSearch provides the
  facilities to add those, but does not provide them out of the box.
  Stemming and language support are useful features, but they are often not
- needed, make the library bigger, and can lead to confusing results. For
- these reasons, I chose to leave them out of scope for MiniSearch, and
- explain instead in the docs how to add them, if needed. That said, if you
- know you need them, Lunr might be an easier choice.</li>
+ needed, make the library bigger, and can sometimes lead to unexpected
+ results. For these reasons, I chose to leave them out of scope for
+ MiniSearch, and explain instead in the docs how to add them, if needed.
+ That said, if you know you need them, Lunr might be an easier choice.</li>
 <li>Lunr index cannot be changed after creation. MiniSearch instead makes it
  possible to <strong>add and remove documents</strong> to the index at any moment. If
- dynamic updates to the index are necessary (that was my case), then
- MiniSearch can be a good option.</li>
+ documents in your collection are subject to change while the app is in use,
+ then MiniSearch makes it possible to index just the changes, instead of
+ re-indexing the whole collection.</li>
 <li>Lunr provides an <strong>advanced query language</strong> that can express some queries
- that are not possible in MiniSearch (for example, searching for terms that
- start with &ldquo;uni&rdquo; and end with &ldquo;ty&rdquo;, like &ldquo;unity&rdquo; and &ldquo;university&rdquo;). On the
- other hand, if you do not need those, you might find MiniSearch API simpler
- to use.</li>
-<li>MiniSearch offers <strong>auto-suggestions</strong> out of the box, to complete partial
- queries. For example, for the partial search &ldquo;uni&rdquo;, it can suggest
+ that are currently not possible in MiniSearch. For example, Lunr can search
+ for terms that start with &ldquo;uni&rdquo; and end with &ldquo;ty&rdquo;, but have any character
+ in the middle, like &ldquo;unity&rdquo; and &ldquo;university&rdquo;. On the other hand, if you do
+ not need those, you might find MiniSearch API simpler to use.</li>
+<li>MiniSearch offers an <strong>auto-suggestion</strong> feature out of the box. For
+ example, for the partial search &ldquo;uni&rdquo;, MiniSearch could suggest
  &ldquo;university&rdquo;, &ldquo;unicorn&rdquo;, etc. The suggestions are calculated on the actual
- documents, and ranked by relevance. This can be used to implement
+ documents, and sorted by relevance. This feature can be used to implement
  auto-completion, like in the demo application shown above. Lunr does not
  currently offer this feature.</li>
 </ol>
 
 <p>Notably, MiniSearch, Lunr, and Fuse.js all come with zero runtime dependencies,
-which is quite a good surprise for a JavaScript package!</p>
+which is quite a good surprise for JavaScript packages!</p>
 
 <h2>Conclusion</h2>
 
 <p>I hope I managed to give a good enough introduction to client-side full-text
-search, its advantages and disadvantages, and the design decisions behind
-<strong>MiniSearch</strong>. I had quite some fun implementing this library, and it is by now
-successfully used in production on way more use cases than I initially
-forecasted. It was also a nice experience to read through other implementations,
-and contribute to them: it is interesting how each library came to some
-different ingenious solution to this tricky problem.</p>
+search, its pros and cons, and the design decisions behind <strong>MiniSearch</strong>. I had
+quite some fun implementing this library, and I am happy to see it used in
+production by now on way more use cases than I initially forecasted. It was also
+a teachful experience to delve through the code of other similar libraries: each
+of them came to some different interesting solution to the tricky problem of
+implementing efficient client-side full-text search.</p>
 
 <p>If you are considering to adopt MiniSearch for a project, you might want to read
 through the <a href="https://lucaong.github.io/minisearch/">documentation</a> and the <a href="https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html">API
-reference</a>.</p>
+reference</a>.
+MiniSearch is open-source software, and contributions to its code and
+documentation are more than welcome!</p>
 
     </article>
 
