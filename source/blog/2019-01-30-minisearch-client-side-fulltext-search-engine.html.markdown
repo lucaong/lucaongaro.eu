@@ -61,7 +61,7 @@ Here is a small demo application to play with, and experiment with different
 options:
 
 <iframe src='https://lucaong.github.io/minisearch/examples/'
-style='border: none; background: #fafafa; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
+style='border: none; background: white; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.5);
 border-radius: 5px; width: 100%; height: 440px; margin: 0 0 1.81em 0;'></iframe>
 
 As can be tested in the demo, the **~5000 songs** are indexed client-side upon
