@@ -12,7 +12,7 @@ provides **client-side full-text search** capabilities. It has zero runtime
 dependencies, and uses a space optimized index to support memory constrained
 environments like mobile browsers. It offers **prefix search**, **fuzzy match**,
 **boosting**, **auto suggestions**, and many of the features expected from a
-server-side search engine like Solr or Elastic Search.
+server-side search engine like Solr or ElasticSearch.
 
 **MiniSearch** is designed to be flexible and easy to use, and I think that a
 quick example can introduce it better than a long explanation:
