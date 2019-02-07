@@ -18,7 +18,7 @@ server-side search engine like Solr or ElasticSearch.
 quick example can introduce it better than a long explanation:
 
 ```javascript
-// A collection of documents we want to search
+// A collection of documents we want to search among
 const documents = [
   { id: 1, title: 'Moby Dick', text: 'Call me Ishmael. Some years ago...' },
   { id: 2, title: 'Zen and the Art of Motorcycle Maintenance', text: 'I can see by my watch...' },
@@ -85,7 +85,7 @@ would be the obvious choice. The challenge though, was to make search as fast as
 possible, but also resilient to spotty Internet connections on users'
 smartphones. I started to think whether it would make sense to implement the
 search index **client-side instead of server-side**: it might sound a bit
-unorthodox, but it would have given us several advantages.
+unorthodox, but a client-side search engine has several advantages.
 
 First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -109,7 +109,7 @@ handling of mispelled terms.
 
 ## Implementing the index
 
-As a rough calculation, if we have 5000 documents to search amongst, and each
+As a rough calculation, if we have 5000 documents to search among, and each
 document is on average 200 characters long (either documents are small, or we
 are only iterested in searching by title, or within a small description), then
 storing all the documents in uncompressed form takes roughly 2MB (JavaScript
