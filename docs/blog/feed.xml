@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-02-04T19:33:23+01:00</updated>
+    <updated>2019-02-07T17:55:54+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
@@ -24,7 +24,7 @@ provides &lt;strong&gt;client-side full-text search&lt;/strong&gt; capabilities.
 dependencies, and uses a space optimized index to support memory constrained
 environments like mobile browsers. It offers &lt;strong&gt;prefix search&lt;/strong&gt;, &lt;strong&gt;fuzzy match&lt;/strong&gt;,
 &lt;strong&gt;boosting&lt;/strong&gt;, &lt;strong&gt;auto suggestions&lt;/strong&gt;, and many of the features expected from a
-server-side search engine like Solr or Elastic Search.&lt;/p&gt;
+server-side search engine like Solr or ElasticSearch.&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;MiniSearch&lt;/strong&gt; is designed to be flexible and easy to use, and I think that a
 quick example can introduce it better than a long explanation:&lt;/p&gt;
