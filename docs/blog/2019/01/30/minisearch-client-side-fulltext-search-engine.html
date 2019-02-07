@@ -106,7 +106,7 @@ quick example can introduce it better than a long explanation:</p>
 35
 36
 37
-</pre></td><td class="rouge-code"><pre><span class="c1">// A collection of documents we want to search</span>
+</pre></td><td class="rouge-code"><pre><span class="c1">// A collection of documents we want to search among</span>
 <span class="kd">const</span> <span class="nx">documents</span> <span class="o">=</span> <span class="p">[</span>
   <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Moby Dick'</span><span class="p">,</span> <span class="na">text</span><span class="p">:</span> <span class="s1">'Call me Ishmael. Some years ago...'</span> <span class="p">},</span>
   <span class="p">{</span> <span class="na">id</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="na">title</span><span class="p">:</span> <span class="s1">'Zen and the Art of Motorcycle Maintenance'</span><span class="p">,</span> <span class="na">text</span><span class="p">:</span> <span class="s1">'I can see by my watch...'</span> <span class="p">},</span>
@@ -171,7 +171,7 @@ would be the obvious choice. The challenge though, was to make search as fast as
 possible, but also resilient to spotty Internet connections on users&rsquo;
 smartphones. I started to think whether it would make sense to implement the
 search index <strong>client-side instead of server-side</strong>: it might sound a bit
-unorthodox, but it would have given us several advantages.</p>
+unorthodox, but a client-side search engine has several advantages.</p>
 
 <p>First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -195,7 +195,7 @@ handling of mispelled terms.</p>
 
 <h2>Implementing the index</h2>
 
-<p>As a rough calculation, if we have 5000 documents to search amongst, and each
+<p>As a rough calculation, if we have 5000 documents to search among, and each
 document is on average 200 characters long (either documents are small, or we
 are only iterested in searching by title, or within a small description), then
 storing all the documents in uncompressed form takes roughly 2MB (JavaScript

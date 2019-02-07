@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-02-07T17:55:54+01:00</updated>
+    <updated>2019-02-07T18:04:59+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
@@ -65,7 +65,7 @@ quick example can introduce it better than a long explanation:&lt;/p&gt;
 35
 36
 37
-&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="c1"&gt;// A collection of documents we want to search&lt;/span&gt;
+&lt;/pre&gt;&lt;/td&gt;&lt;td class="rouge-code"&gt;&lt;pre&gt;&lt;span class="c1"&gt;// A collection of documents we want to search among&lt;/span&gt;
 &lt;span class="kd"&gt;const&lt;/span&gt; &lt;span class="nx"&gt;documents&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="p"&gt;[&lt;/span&gt;
   &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;1&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Moby Dick'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Call me Ishmael. Some years ago...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
   &lt;span class="p"&gt;{&lt;/span&gt; &lt;span class="na"&gt;id&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="mi"&gt;2&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;title&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'Zen and the Art of Motorcycle Maintenance'&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="na"&gt;text&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="s1"&gt;'I can see by my watch...'&lt;/span&gt; &lt;span class="p"&gt;},&lt;/span&gt;
@@ -130,7 +130,7 @@ would be the obvious choice. The challenge though, was to make search as fast as
 possible, but also resilient to spotty Internet connections on users&amp;rsquo;
 smartphones. I started to think whether it would make sense to implement the
 search index &lt;strong&gt;client-side instead of server-side&lt;/strong&gt;: it might sound a bit
-unorthodox, but it would have given us several advantages.&lt;/p&gt;
+unorthodox, but a client-side search engine has several advantages.&lt;/p&gt;
 
 &lt;p&gt;First, once the index is loaded, a temporary interruption of the Internet
 connectivity would not affect the search experience: if the search index lives
@@ -154,7 +154,7 @@ handling of mispelled terms.&lt;/p&gt;
 
 &lt;h2&gt;Implementing the index&lt;/h2&gt;
 
-&lt;p&gt;As a rough calculation, if we have 5000 documents to search amongst, and each
+&lt;p&gt;As a rough calculation, if we have 5000 documents to search among, and each
 document is on average 200 characters long (either documents are small, or we
 are only iterested in searching by title, or within a small description), then
 storing all the documents in uncompressed form takes roughly 2MB (JavaScript
