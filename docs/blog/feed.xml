@@ -14,7 +14,7 @@
     <link rel="alternate" href="https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html"/>
     <id>https://lucaongaro.eu/blog/2019/01/30/minisearch-client-side-fulltext-search-engine.html</id>
     <published>2019-01-30T16:08:00+01:00</published>
-    <updated>2019-02-07T18:04:59+01:00</updated>
+    <updated>2020-11-03T11:36:27+01:00</updated>
     <author>
       <name>Luca Ongaro</name>
     </author>
@@ -292,7 +292,7 @@ implementing efficient client-side full-text search.&lt;/p&gt;
 
 &lt;p&gt;If you are considering to adopt MiniSearch for a project, more detailed
 information is available in the
-&lt;a href="https://lucaong.github.io/minisearch/"&gt;documentation&lt;/a&gt; and the &lt;a href="https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html"&gt;API
+&lt;a href="https://lucaong.github.io/minisearch/"&gt;documentation&lt;/a&gt; and the &lt;a href="https://lucaong.github.io/minisearch/modules/_minisearch_.html"&gt;API
 reference&lt;/a&gt;.
 MiniSearch is open-source software, and contributions to its code and
 documentation are more than welcome!&lt;/p&gt;
