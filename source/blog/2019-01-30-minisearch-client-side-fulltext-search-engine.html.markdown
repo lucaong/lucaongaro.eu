@@ -244,6 +244,6 @@ implementing efficient client-side full-text search.
 If you are considering to adopt MiniSearch for a project, more detailed
 information is available in the
 [documentation](https://lucaong.github.io/minisearch/) and the [API
-reference](https://lucaong.github.io/minisearch/class/src/MiniSearch.js~MiniSearch.html).
+reference](https://lucaong.github.io/minisearch/modules/_minisearch_.html).
 MiniSearch is open-source software, and contributions to its code and
 documentation are more than welcome!
